@@ -4,13 +4,13 @@
     <title>clib reference</title>
     <style>
         body {
-            font-family: Î¢ÈíÑÅºÚ;
+            font-family: å¾®è½¯é›…é»‘;
             background-color: antiquewhite;
         }
 
         pre {
-            margin: 0; /* È¡ÏûÍâ±ß¾à */
-            padding: 0; /* È¡ÏûÄÚ±ß¾à */
+            margin: 0; /* å–æ¶ˆå¤–è¾¹è· */
+            padding: 0; /* å–æ¶ˆå†…è¾¹è· */
         }
 
         code {
@@ -25,8 +25,8 @@
         .container {
             display: flex;
             max-width: auto;
-            font-size: 1.2vw; /* Ê¹ÓÃvwµ¥Î»£¬×ÖÌå´óĞ¡ÓëÈİÆ÷¿í¶È³É±ÈÀı±ä»¯ */
-            flex-direction: column; /* ÉèÖÃÖ÷Öá·½ÏòÎªÊúÖ±ÅÅÁĞ */
+            font-size: 1.2vw; /* ä½¿ç”¨vwå•ä½ï¼Œå­—ä½“å¤§å°ä¸å®¹å™¨å®½åº¦æˆæ¯”ä¾‹å˜åŒ– */
+            flex-direction: column; /* è®¾ç½®ä¸»è½´æ–¹å‘ä¸ºç«–ç›´æ’åˆ— */
         }
 
         .code-block {
@@ -34,9 +34,9 @@
             background-color: #f6f2f2;
             border: 0.5vw solid #999;
             padding: 1vw;
-            margin-left: 3vw; /* ´´½¨×ó²à¼ä¸ô */
-            margin-right: 30vw; /* ´´½¨ÓÒ²à¼ä¸ô */
-            padding-bottom: 0; /* È¡ÏûÏÂ·½ÄÚ±ß¾à */
+            margin-left: 3vw; /* åˆ›å»ºå·¦ä¾§é—´éš” */
+            margin-right: 30vw; /* åˆ›å»ºå³ä¾§é—´éš” */
+            padding-bottom: 0; /* å–æ¶ˆä¸‹æ–¹å†…è¾¹è· */
         }
 
         .result-block {
@@ -44,17 +44,17 @@
             background-color: #f6f2f2;
             border: 0.5vw solid #999;
             padding: 1vw;
-            margin-left: 3vw; /* ´´½¨×ó²à¼ä¸ô */
-            margin-right: 30vw; /* ´´½¨ÓÒ²à¼ä¸ô */
-            padding-bottom: 0; /* È¡ÏûÏÂ·½ÄÚ±ß¾à */
+            margin-left: 3vw; /* åˆ›å»ºå·¦ä¾§é—´éš” */
+            margin-right: 30vw; /* åˆ›å»ºå³ä¾§é—´éš” */
+            padding-bottom: 0; /* å–æ¶ˆä¸‹æ–¹å†…è¾¹è· */
         }
 
         .code-block, .result-block {
-            min-width: 100px; /* ÊÊµ±µÄ×îĞ¡¿í¶È */
+            min-width: 100px; /* é€‚å½“çš„æœ€å°å®½åº¦ */
         }
 
         .spacer {
-            height: 18px; /* ÉèÖÃ¼ä¸ô¸ß¶È */
+            height: 18px; /* è®¾ç½®é—´éš”é«˜åº¦ */
         }
 
         .language-cpp {
@@ -63,21 +63,21 @@
     </style>
 </head>
 <body>
-    <h1 style="text-align: center">clibÎÄµµ</h1>
-    <h2 style="font-family: ¿¬Ìå; font-size: 1.8em"><b>×÷Õß£ºÕÔÃÎ¸®</b></h2>
-    <i style="color: dimgray">µ±Ç°°æ±¾£º1.0.0</i>
+    <h1 style="text-align: center">clibæ–‡æ¡£</h1>
+    <h2 style="font-family: æ¥·ä½“; font-size: 1.8em"><b>ä½œè€…ï¼šèµµæ¢¦åºœ</b></h2>
+    <i style="color: dimgray">å½“å‰ç‰ˆæœ¬ï¼š1.0.0</i>
     <hr />
-    <h3>Ò»¡¢formatterÌØ»¯</h3>
+    <h3>ä¸€ã€formatterç‰¹åŒ–</h3>
     <p>
-        ¶ÔÓÚÊµÏÖÁË<i style="color: firebrick">ÀÏÊ½ÏòÇ°µü´úÆ÷(LegacyForwardIterator)</i> µÄĞòÁĞÈİÆ÷£¬±¾¿âÎªÆäÌá¹©ÁË»ù´¡¸ñÊ½»¯Æ÷£¬¿ÉÒÔÖ§³ÖÈÎÒâ¶àÎ¬¶ÈµÄÈİÆ÷¸ñÊ½»¯£¨Ôİ²»Ö§³Ö×Ô¶¨Òå¸ñÊ½ËµÃ÷£©<br />
-        <h4><i>ÒÑÖ§³ÖµÄ±ê×¼¿âÈİÆ÷£º</i></h4>
-        <h4>Ë³ĞòÈİÆ÷£º<span style="color: blue">std::array¡¢std::vector¡¢std::deque¡¢std::forward_list¡¢std::list</span></h4>
-        <h4>¹ØÁªÈİÆ÷£º<span style="color: blueviolet">std::set¡¢std::map¡¢std::multiset¡¢std::multimap</span></h4>
-        <h4>ÎŞĞò¹ØÁªÈİÆ÷£º<span style="color: darkmagenta">std::unordered_set¡¢std::unordered_map¡¢std::unordered_multiset¡¢std::unordered_multimap</span></h4>
+        å¯¹äºå®ç°äº†<i style="color: firebrick">è€å¼å‘å‰è¿­ä»£å™¨(LegacyForwardIterator)</i> çš„åºåˆ—å®¹å™¨ï¼Œæœ¬åº“ä¸ºå…¶æä¾›äº†åŸºç¡€æ ¼å¼åŒ–å™¨ï¼Œå¯ä»¥æ”¯æŒä»»æ„å¤šç»´åº¦çš„å®¹å™¨æ ¼å¼åŒ–ï¼ˆæš‚ä¸æ”¯æŒè‡ªå®šä¹‰æ ¼å¼è¯´æ˜ï¼‰<br />
+        <h4><i>å·²æ”¯æŒçš„æ ‡å‡†åº“å®¹å™¨ï¼š</i></h4>
+        <h4>é¡ºåºå®¹å™¨ï¼š<span style="color: blue">std::arrayã€std::vectorã€std::dequeã€std::forward_listã€std::list</span></h4>
+        <h4>å…³è”å®¹å™¨ï¼š<span style="color: blueviolet">std::setã€std::mapã€std::multisetã€std::multimap</span></h4>
+        <h4>æ— åºå…³è”å®¹å™¨ï¼š<span style="color: darkmagenta">std::unordered_setã€std::unordered_mapã€std::unordered_multisetã€std::unordered_multimap</span></h4>
     </p>
     <div class="container">
         <div class="code-block">
-            <span style="font-size: larger"><i>Ê¾Àı´úÂë£º</i></span>
+            <span style="font-size: larger"><i>ç¤ºä¾‹ä»£ç ï¼š</i></span>
             <pre>
                 <code class="language-cpp">
 <span style="color: gray">#include</span> <span style="color: crimson">&lt;print&gt;</span>
@@ -96,9 +96,9 @@
                 </code>
             </pre>
         </div>
-        <div class="spacer"></div> <!-- ¼ä¸ôÔªËØ -->
+        <div class="spacer"></div> <!-- é—´éš”å…ƒç´  -->
         <div class="result-block">
-            <span style="font-size: larger"><i>¿ØÖÆÌ¨£º</i></span>
+            <span style="font-size: larger"><i>æ§åˆ¶å°ï¼š</i></span>
             <pre>
                 <code style="font-family: Monaco" class="console">
 std::vector&lt;char&gt;:
@@ -113,14 +113,14 @@ std::forward_list&lt;std::unordered_multiset&lt;int&gt;&gt;:
             </pre>
         </div>
     </div>
-    <h3>¶ş¡¢À©Õ¹¹ÜµÀÔËËã</h3>
+    <h3>äºŒã€æ‰©å±•ç®¡é“è¿ç®—</h3>
     <p>
-        ±¾¿âÔÚ clib::chain_utility Ãû³Æ¿Õ¼äÄÚÖØÔØÁË operator| ºÍ operator/ Á½¸öÔËËã·û£¬ÓÃÓÚÊµÏÖÈİÆ÷·¶Î§ÄÚµÄ²»¿É±ä¹ÜµÀÔËËãÓë¿É±ä¹ÜµÀÔËËã£¬ÓÉÓÚÈİÆ÷ÓëÊÓÍ¼±¾ÖÊ²¢²»ÏàÍ¬£¬Òò´Ë´ËÔËËã·ûÓë std::views ÖĞÖØÔØµÄ¹ÜµÀÔËËã·û operator| ²¢²»ÏàÈİ£¬Èç¹ûÒ»¶¨Òª»ìºÏÊ¹ÓÃ£¬ÇëÒ»¶¨ÏÈÊ¹ÓÃ std::views::all µÈº¯Êı½«ÈİÆ÷×ª»»Îª·¶Î§ÊÊÅäÆ÷¶ÔÏó
-        <h4 style="color: red"><i><b>×¢Òâ£º¸ÃÖØÔØÔËËãÈÔ´¦ÓÚ²âÊÔ½×¶Î£¬³ı·ÇÄãºÜÇå³şÄãÔÚ×öÊ²Ã´£¬·ñÔòÇë²»ÒªÇáÒ×ÔÚÏîÄ¿´úÂëÖĞÊ¹ÓÃ¸ÃÀ©Õ¹ÔËËã£¡£¡£¡</b></i></h4>
+        æœ¬åº“åœ¨ clib::chain_utility åç§°ç©ºé—´å†…é‡è½½äº† operator| å’Œ operator/ ä¸¤ä¸ªè¿ç®—ç¬¦ï¼Œç”¨äºå®ç°å®¹å™¨èŒƒå›´å†…çš„ä¸å¯å˜ç®¡é“è¿ç®—ä¸å¯å˜ç®¡é“è¿ç®—ï¼Œç”±äºå®¹å™¨ä¸è§†å›¾æœ¬è´¨å¹¶ä¸ç›¸åŒï¼Œå› æ­¤æ­¤è¿ç®—ç¬¦ä¸ std::views ä¸­é‡è½½çš„ç®¡é“è¿ç®—ç¬¦ operator| å¹¶ä¸ç›¸å®¹ï¼Œå¦‚æœä¸€å®šè¦æ··åˆä½¿ç”¨ï¼Œè¯·ä¸€å®šå…ˆä½¿ç”¨ std::views::all ç­‰å‡½æ•°å°†å®¹å™¨è½¬æ¢ä¸ºèŒƒå›´é€‚é…å™¨å¯¹è±¡
+        <h4 style="color: red"><i><b>æ³¨æ„ï¼šè¯¥é‡è½½è¿ç®—ä»å¤„äºæµ‹è¯•é˜¶æ®µï¼Œé™¤éä½ å¾ˆæ¸…æ¥šä½ åœ¨åšä»€ä¹ˆï¼Œå¦åˆ™è¯·ä¸è¦è½»æ˜“åœ¨é¡¹ç›®ä»£ç ä¸­ä½¿ç”¨è¯¥æ‰©å±•è¿ç®—ï¼ï¼ï¼</b></i></h4>
     </p>
     <div class="container">
         <div class="code-block">
-            <span style="font-size: larger"><i>Ê¾Àı´úÂë£º</i></span>
+            <span style="font-size: larger"><i>ç¤ºä¾‹ä»£ç ï¼š</i></span>
             <pre>
                 <code class="language-cpp">
 <span style="color: gray">#include</span> <span style="color: crimson">&lt;print&gt;</span>
@@ -130,7 +130,7 @@ std::forward_list&lt;std::unordered_multiset&lt;int&gt;&gt;:
 <span style="color: blue">int</span> <span style="color: brown">main</span>() {
     <span style="color: blue">using</span> <span style="color: blue">namespace</span> clib::chain_utility;
     std::<span style="color: darkturquoise">map</span>&lt;<span style="color: blue">int</span>, <span style="color: blue">int</span>&gt; <span style="color: cornflowerblue">map</span>{ { 1, 1 }, { 2, 2 }, { 3, 3 }, { 4, 4 } };
-    std::<span style="color: brown">println</span>(<span style="color: crimson">"map£º{}"</span>, <span style="color: cornflowerblue">map</span>);
+    std::<span style="color: brown">println</span>(<span style="color: crimson">"mapï¼š{}"</span>, <span style="color: cornflowerblue">map</span>);
     size_t <span style="color: cornflowerblue">flag</span>{};
     for (<span style="color: blue">auto</span>&& [<span style="color: cornflowerblue">key</span>, <span style="color: cornflowerblue">val</span>] : <span style="color: cornflowerblue">map</span>
         / [](<span style="color: blue">auto</span>& <span style="color: gray">n</span>) { <span style="color: gray">n</span>.second *= 2; }
@@ -138,26 +138,26 @@ std::forward_list&lt;std::unordered_multiset&lt;int&gt;&gt;:
         | std::views::<span style="color: brown">reverse</span>
         | std::views::<span style="color: brown">all</span>
         | std::views::<span style="color: brown">filter</span>([](<span style="color: blue">auto</span> <span style="color: gray">_</span>) { <span style="color: blueviolet">return</span> <span style="color: blue">true</span>; })) {
-        std::<span style="color: brown">println</span>(<span style="color: crimson">"µÚ{}¸öÔªËØ£º({} -> {})"</span>, ++<span style="color: cornflowerblue">flag</span>, <span style="color: cornflowerblue">key</span>, <span style="color: cornflowerblue">val</span>);
+        std::<span style="color: brown">println</span>(<span style="color: crimson">"ç¬¬{}ä¸ªå…ƒç´ ï¼š({} -> {})"</span>, ++<span style="color: cornflowerblue">flag</span>, <span style="color: cornflowerblue">key</span>, <span style="color: cornflowerblue">val</span>);
     }
-    std::<span style="color: brown">println</span>(<span style="color: crimson">"map£º{}"</span>, <span style="color: cornflowerblue">map</span>);
-    std::<span style="color: brown">println</span>(<span style="color: crimson">"×îÖÕmapµÄÖµÊÜµ½ÁË¿É±ä¹ÜµÀÔËËãµ÷ÓÃ [](auto& n) { n.second *= 2; } µÄÓ°Ïì£¬µ«Î´ÊÜµ½²»¿É±ä¹ÜµÀÔËËãµ÷ÓÃ [](auto& n) { n.second += 1; } µÄÓ°Ïì"</span>);
+    std::<span style="color: brown">println</span>(<span style="color: crimson">"mapï¼š{}"</span>, <span style="color: cornflowerblue">map</span>);
+    std::<span style="color: brown">println</span>(<span style="color: crimson">"æœ€ç»ˆmapçš„å€¼å—åˆ°äº†å¯å˜ç®¡é“è¿ç®—è°ƒç”¨ [](auto& n) { n.second *= 2; } çš„å½±å“ï¼Œä½†æœªå—åˆ°ä¸å¯å˜ç®¡é“è¿ç®—è°ƒç”¨ [](auto& n) { n.second += 1; } çš„å½±å“"</span>);
 }
                 </code>
             </pre>
         </div>
-        <div class="spacer"></div> <!-- ¼ä¸ôÔªËØ -->
+        <div class="spacer"></div> <!-- é—´éš”å…ƒç´  -->
         <div class="result-block">
-            <span style="font-size: larger"><i>¿ØÖÆÌ¨£º</i></span>
+            <span style="font-size: larger"><i>æ§åˆ¶å°ï¼š</i></span>
             <pre>
                 <code style="font-family: Monaco" class="console">
-map£º{(1 -> 1), (2 -> 2), (3 -> 3), (4 -> 4)}
-µÚ1¸öÔªËØ£º(4 -> 9)
-µÚ2¸öÔªËØ£º(3 -> 7)
-µÚ3¸öÔªËØ£º(2 -> 5)
-µÚ4¸öÔªËØ£º(1 -> 3)
-map£º{(1 -> 2), (2 -> 4), (3 -> 6), (4 -> 8)}
-×îÖÕmapµÄÖµÊÜµ½ÁË¿É±ä¹ÜµÀÔËËãµ÷ÓÃ [](auto& n) { n.second *= 2; } µÄÓ°Ïì£¬µ«Î´ÊÜµ½²»¿É±ä¹ÜµÀÔËËãµ÷ÓÃ [](auto& n) { n.second += 1; } µÄÓ°Ïì
+mapï¼š{(1 -> 1), (2 -> 2), (3 -> 3), (4 -> 4)}
+ç¬¬1ä¸ªå…ƒç´ ï¼š(4 -> 9)
+ç¬¬2ä¸ªå…ƒç´ ï¼š(3 -> 7)
+ç¬¬3ä¸ªå…ƒç´ ï¼š(2 -> 5)
+ç¬¬4ä¸ªå…ƒç´ ï¼š(1 -> 3)
+mapï¼š{(1 -> 2), (2 -> 4), (3 -> 6), (4 -> 8)}
+æœ€ç»ˆmapçš„å€¼å—åˆ°äº†å¯å˜ç®¡é“è¿ç®—è°ƒç”¨ [](auto& n) { n.second *= 2; } çš„å½±å“ï¼Œä½†æœªå—åˆ°ä¸å¯å˜ç®¡é“è¿ç®—è°ƒç”¨ [](auto& n) { n.second += 1; } çš„å½±å“
                 </code>
             </pre>
         </div>
