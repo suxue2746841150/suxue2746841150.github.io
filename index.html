@@ -24,28 +24,24 @@
 
         .container {
             display: flex;
-            max-width: auto;
-            font-size: 1.2vw; /* 使用vw单位，字体大小与容器宽度成比例变化 */
-            flex-direction: column; /* 设置主轴方向为竖直排列 */
+            font-size: 15px; /* 使用vw单位，字体大小与容器宽度成比例变化 */
         }
 
         .code-block {
             flex: 1;
             background-color: #f6f2f2;
-            border: 0.5vw solid #999;
-            padding: 1vw;
-            margin-left: 3vw; /* 创建左侧间隔 */
-            margin-right: 30vw; /* 创建右侧间隔 */
+            border: 7px solid #dfcfb6;
+            padding: 10px;
+            margin-left: 3%; /* 创建左侧间隔 */
             padding-bottom: 0; /* 取消下方内边距 */
         }
 
         .result-block {
             flex: 1;
             background-color: #f6f2f2;
-            border: 0.5vw solid #999;
-            padding: 1vw;
-            margin-left: 3vw; /* 创建左侧间隔 */
-            margin-right: 30vw; /* 创建右侧间隔 */
+            border: 7px solid #dfcfb6;
+            padding: 10px;
+            margin-right: 3%; /* 创建右侧间隔 */
             padding-bottom: 0; /* 取消下方内边距 */
         }
 
@@ -54,7 +50,7 @@
         }
 
         .spacer {
-            height: 18px; /* 设置间隔高度 */
+            width: 1.5%; /* 设置间隔 */
         }
 
         .language-cpp {
@@ -63,22 +59,23 @@
     </style>
 </head>
 <body>
-    <h1 style="text-align: center">clib文档</h1>
-    <h2 style="font-family: 楷体; font-size: 1.8em"><b>作者：赵梦府</b></h2>
-    <i style="color: dimgray">当前版本：1.0.0</i>
-    <hr />
-    <h3>一、formatter特化</h3>
-    <p>
-        对于实现了<i style="color: firebrick">老式向前迭代器(LegacyForwardIterator)</i> 的序列容器，本库为其提供了基础格式化器，可以支持任意多维度的容器格式化（暂不支持自定义格式说明）<br />
-        <h4><i>已支持的标准库容器：</i></h4>
-        <h4>顺序容器：<span style="color: blue">std::array、std::vector、std::deque、std::forward_list、std::list</span></h4>
-        <h4>关联容器：<span style="color: blueviolet">std::set、std::map、std::multiset、std::multimap</span></h4>
-        <h4>无序关联容器：<span style="color: darkmagenta">std::unordered_set、std::unordered_map、std::unordered_multiset、std::unordered_multimap</span></h4>
-    </p>
-    <div class="container">
-        <div class="code-block">
-            <span style="font-size: larger"><i>示例代码：</i></span>
-            <pre>
+    <div style="width: fit-content; min-width: 1400px">
+        <h1 style="text-align: center">clib文档</h1>
+        <h2 style="font-family: 楷体; font-size: 1.8em"><b>作者：赵梦府</b></h2>
+        <i style="color: dimgray">当前版本：1.0.0</i>
+        <hr />
+        <h3>一、formatter特化</h3>
+        <p>
+            对于实现了<i style="color: firebrick">老式向前迭代器(LegacyForwardIterator)</i> 的序列容器，本库为其提供了基础格式化器，可以支持任意多维度的容器格式化（暂不支持自定义格式说明）<br />
+            <h4><i>已支持的标准库容器：</i></h4>
+            <h4>顺序容器：<span style="color: blue">std::array、std::vector、std::deque、std::forward_list、std::list</span></h4>
+            <h4>关联容器：<span style="color: blueviolet">std::set、std::map、std::multiset、std::multimap</span></h4>
+            <h4>无序关联容器：<span style="color: darkmagenta">std::unordered_set、std::unordered_map、std::unordered_multiset、std::unordered_multimap</span></h4>
+        </p>
+        <div class="container">
+            <div class="code-block">
+                <span style="font-size: larger"><i>示例代码：</i></span>
+                <pre>
                 <code class="language-cpp">
 <span style="color: gray">#include</span> <span style="color: crimson">&lt;print&gt;</span>
 <span style="color: gray">#include</span> <span style="color: crimson">"clib.hpp"</span>
@@ -95,33 +92,33 @@
 }
                 </code>
             </pre>
-        </div>
-        <div class="spacer"></div> <!-- 间隔元素 -->
-        <div class="result-block">
-            <span style="font-size: larger"><i>控制台：</i></span>
-            <pre>
+            </div>
+            <div class="spacer"></div> <!-- 间隔元素 -->
+            <div class="result-block">
+                <span style="font-size: larger"><i>控制台：</i></span>
+                <pre>
                 <code style="font-family: Monaco" class="console">
 std::vector&lt;char&gt;:
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[+, -, *, /]
+&nbsp;&nbsp;&nbsp;&nbsp;[+, -, *, /]
 std::deque&lt;std::list&lt;int&gt;&gt;:
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[[1, 2], [3, 4]]
+&nbsp;&nbsp;&nbsp;&nbsp;[[1, 2], [3, 4]]
 std::map&lt;std::string, double&gt;:
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{(abc -> 1.5), (bcd -> 2.4)}
+&nbsp;&nbsp;&nbsp;&nbsp;{(abc -> 1.5), (bcd -> 2.4)}
 std::forward_list&lt;std::unordered_multiset&lt;int&gt;&gt;:
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[{1, 1, 2}, {2, 3, 3}]
+&nbsp;&nbsp;&nbsp;&nbsp;[{1, 1, 2}, {2, 3, 3}]
                 </code>
             </pre>
+            </div>
         </div>
-    </div>
-    <h3>二、扩展管道运算</h3>
-    <p>
-        本库在 clib::chain_utility 名称空间内重载了 operator| 和 operator/ 两个运算符，用于实现容器范围内的不可变管道运算与可变管道运算，由于容器与视图本质并不相同，因此此运算符与 std::views 中重载的管道运算符 operator| 并不相容，如果一定要混合使用，请一定先使用 std::views::all 等函数将容器转换为范围适配器对象
-        <h4 style="color: red"><i><b>注意：该重载运算仍处于测试阶段，除非你很清楚你在做什么，否则请不要轻易在项目代码中使用该扩展运算！！！</b></i></h4>
-    </p>
-    <div class="container">
-        <div class="code-block">
-            <span style="font-size: larger"><i>示例代码：</i></span>
-            <pre>
+        <h3>二、扩展管道运算</h3>
+        <p>
+            本库在 clib::chain_utility 名称空间内重载了 operator| 和 operator/ 两个运算符，用于实现容器范围内的不可变管道运算与可变管道运算，由于容器与视图本质并不相同，因此此运算符与 std::views 中重载的管道运算符 operator| 并不相容，如果一定要混合使用，请一定先使用 std::views::all 等函数将容器转换为范围适配器对象
+            <h4 style="color: red"><i><b>注意：该重载运算仍处于测试阶段，除非你很清楚你在做什么，否则请不要轻易在项目代码中使用该扩展运算！！！</b></i></h4>
+        </p>
+        <div class="container">
+            <div class="code-block">
+                <span style="font-size: larger"><i>示例代码：</i></span>
+                <pre>
                 <code class="language-cpp">
 <span style="color: gray">#include</span> <span style="color: crimson">&lt;print&gt;</span>
 <span style="color: gray">#include</span> <span style="color: crimson">&lt;ranges&gt;</span>
@@ -145,11 +142,11 @@ std::forward_list&lt;std::unordered_multiset&lt;int&gt;&gt;:
 }
                 </code>
             </pre>
-        </div>
-        <div class="spacer"></div> <!-- 间隔元素 -->
-        <div class="result-block">
-            <span style="font-size: larger"><i>控制台：</i></span>
-            <pre>
+            </div>
+            <div class="spacer"></div> <!-- 间隔元素 -->
+            <div class="result-block">
+                <span style="font-size: larger"><i>控制台：</i></span>
+                <pre>
                 <code style="font-family: Monaco" class="console">
 map：{(1 -> 1), (2 -> 2), (3 -> 3), (4 -> 4)}
 第1个元素：(4 -> 9)
@@ -160,8 +157,9 @@ map：{(1 -> 2), (2 -> 4), (3 -> 6), (4 -> 8)}
 最终map的值受到了可变管道运算调用 [](auto& n) { n.second *= 2; } 的影响，但未受到不可变管道运算调用 [](auto& n) { n.second += 1; } 的影响
                 </code>
             </pre>
+            </div>
         </div>
+        <br />
     </div>
-    <br />
 </body>
 </html>
