@@ -97,17 +97,9 @@ _CLIB_END
 
 #ifdef _HAS_CXX20
 #include <format> // Template specialization for Containers formatter
-#include <array>
-#include <deque>
-#include <forward_list>
-#include <list>
-#include <map>
-#include <set>
-#include <unordered_map>
-#include <unordered_set>
-#include <vector>
 _STD_BEGIN
 
+#ifdef _ARRAY_
 // Template specialization for arrays formatter
 template <typename _T, size_t _Size>
 struct formatter<array<_T, _Size>> : formatter<string_view> {
@@ -116,7 +108,9 @@ struct formatter<array<_T, _Size>> : formatter<string_view> {
         return formatter<string_view>::format(clib::private_utility::_format_sequence_containers(__v), __ctx);
     }
 };
+#endif // _ARRAY_
 
+#ifdef _VECTOR_
 // Template specialization for vectors formatter
 template <typename _T, typename _Alloc>
 struct formatter<vector<_T, _Alloc>> : formatter<string_view> {
@@ -125,7 +119,9 @@ struct formatter<vector<_T, _Alloc>> : formatter<string_view> {
         return formatter<string_view>::format(clib::private_utility::_format_sequence_containers(__v), __ctx);
     }
 };
+#endif // _VECTOR_
 
+#ifdef _DEQUE_
 // Template specialization for deques formatter
 template <typename _T, typename _Alloc>
 struct formatter<deque<_T, _Alloc>> : formatter<string_view> {
@@ -134,16 +130,9 @@ struct formatter<deque<_T, _Alloc>> : formatter<string_view> {
         return formatter<string_view>::format(clib::private_utility::_format_sequence_containers(__v), __ctx);
     }
 };
+#endif // _DEQUE_
 
-// Template specialization for lists formatter
-template <typename _T, typename _Alloc>
-struct formatter<list<_T, _Alloc>> : formatter<string_view> {
-    template <typename _Fmt_Cont>
-    auto format(const list<_T, _Alloc>& __v, _Fmt_Cont& __ctx) {
-        return formatter<string_view>::format(clib::private_utility::_format_sequence_containers(__v), __ctx);
-    }
-};
-
+#ifdef _FORWARD_LIST_
 // Template specialization for forward_lists formatter
 template <typename _T, typename _Alloc>
 struct formatter<forward_list<_T, _Alloc>> : formatter<string_view> {
@@ -152,22 +141,26 @@ struct formatter<forward_list<_T, _Alloc>> : formatter<string_view> {
         return formatter<string_view>::format(clib::private_utility::_format_sequence_containers(__v), __ctx);
     }
 };
+#endif // _FORWARD_LIST_
 
+#ifdef _LIST_
+// Template specialization for lists formatter
+template <typename _T, typename _Alloc>
+struct formatter<list<_T, _Alloc>> : formatter<string_view> {
+    template <typename _Fmt_Cont>
+    auto format(const list<_T, _Alloc>& __v, _Fmt_Cont& __ctx) {
+        return formatter<string_view>::format(clib::private_utility::_format_sequence_containers(__v), __ctx);
+    }
+};
+#endif // _LIST_
+
+#ifdef _SET_
 // Template specialization for sets formatter
 template <typename _T, typename _Cmp, typename _Alloc>
 struct formatter<set<_T, _Cmp, _Alloc>> : formatter<string_view> {
     template <typename _Fmt_Cont>
     auto format(const set<_T, _Cmp, _Alloc>& __v, _Fmt_Cont& __ctx) {
         return formatter<string_view>::format(clib::private_utility::_format_associative_containers(__v), __ctx);
-    }
-};
-
-// Template specialization for maps formatter
-template <typename _Key, typename _Tp, typename _Cmp, typename _Alloc>
-struct formatter<map<_Key, _Tp, _Cmp, _Alloc>> : formatter<string_view> {
-    template <typename _Fmt_Cont>
-    auto format(const map<_Key, _Tp, _Cmp, _Alloc>& __v, _Fmt_Cont& __ctx) {
-        return formatter<string_view>::format(clib::private_utility::_format_associative_pair_containers(__v), __ctx);
     }
 };
 
@@ -179,6 +172,17 @@ struct formatter<multiset<_T, _Cmp, _Alloc>> : formatter<string_view> {
         return formatter<string_view>::format(clib::private_utility::_format_associative_containers(__v), __ctx);
     }
 };
+#endif // _SET_
+
+#ifdef _MAP_
+// Template specialization for maps formatter
+template <typename _Key, typename _Tp, typename _Cmp, typename _Alloc>
+struct formatter<map<_Key, _Tp, _Cmp, _Alloc>> : formatter<string_view> {
+    template <typename _Fmt_Cont>
+    auto format(const map<_Key, _Tp, _Cmp, _Alloc>& __v, _Fmt_Cont& __ctx) {
+        return formatter<string_view>::format(clib::private_utility::_format_associative_pair_containers(__v), __ctx);
+    }
+};
 
 // Template specialization for multimaps formatter
 template <typename _Key, typename _Tp, typename _Cmp, typename _Alloc>
@@ -188,22 +192,15 @@ struct formatter<multimap<_Key, _Tp, _Cmp, _Alloc>> : formatter<string_view> {
         return formatter<string_view>::format(clib::private_utility::_format_associative_pair_containers(__v), __ctx);
     }
 };
+#endif // _MAP_
 
+#ifdef _UNORDERED_SET_
 // Template specialization for unordered_sets formatter
 template <typename _T, typename _Hash, typename _Pred, typename _Alloc>
 struct formatter<unordered_set<_T, _Hash, _Pred, _Alloc>> : formatter<string_view> {
     template <typename _Fmt_Cont>
     auto format(const unordered_set<_T, _Hash, _Pred, _Alloc>& __v, _Fmt_Cont& __ctx) {
         return formatter<string_view>::format(clib::private_utility::_format_associative_containers(__v), __ctx);
-    }
-};
-
-// Template specialization for unordered_maps formatter
-template <typename _Key, typename _Tp, typename _Hash, typename _Pred, typename _Alloc>
-struct formatter<unordered_map<_Key, _Tp, _Hash, _Pred, _Alloc>> : formatter<string_view> {
-    template <typename _Fmt_Cont>
-    auto format(const unordered_map<_Key, _Tp, _Hash, _Pred, _Alloc>& __v, _Fmt_Cont& __ctx) {
-        return formatter<string_view>::format(clib::private_utility::_format_associative_pair_containers(__v), __ctx);
     }
 };
 
@@ -215,6 +212,17 @@ struct formatter<unordered_multiset<_T, _Hash, _Pred, _Alloc>> : formatter<strin
         return formatter<string_view>::format(clib::private_utility::_format_associative_containers(__v), __ctx);
     }
 };
+#endif // _UNORDERED_SET_
+
+#ifdef _UNORDERED_MAP_
+// Template specialization for unordered_maps formatter
+template <typename _Key, typename _Tp, typename _Hash, typename _Pred, typename _Alloc>
+struct formatter<unordered_map<_Key, _Tp, _Hash, _Pred, _Alloc>> : formatter<string_view> {
+    template <typename _Fmt_Cont>
+    auto format(const unordered_map<_Key, _Tp, _Hash, _Pred, _Alloc>& __v, _Fmt_Cont& __ctx) {
+        return formatter<string_view>::format(clib::private_utility::_format_associative_pair_containers(__v), __ctx);
+    }
+};
 
 // Template specialization for unordered_multimaps formatter
 template <typename _Key, typename _Tp, typename _Hash, typename _Pred, typename _Alloc>
@@ -224,6 +232,7 @@ struct formatter<unordered_multimap<_Key, _Tp, _Hash, _Pred, _Alloc>> : formatte
         return formatter<string_view>::format(clib::private_utility::_format_associative_pair_containers(__v), __ctx);
     }
 };
+#endif // _UNORDERED_MAP_
 
 _STD_END
 #endif // _HAS_CXX20
