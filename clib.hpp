@@ -3,7 +3,7 @@
 /**************************************************
 |=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=|
 |-  Author: Zhao Mengfu                          -|
-|=  Version: 1.0.0                               =|
+|=  Version: 1.1-23.1029                         =|
 |-  Compiler: Microsoft Visual C++ 2022 v17.7.5  -|
 |=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=|
 **************************************************/
@@ -16,10 +16,9 @@
 #define _CLIB_PRIVATE_UTILITY
 
 #include <cstdint>
+#include <sstream>
 #include <type_traits>
-#include <string>
 
-#define _DISCARDED
 #define _NODISCARD  [[nodiscard]]
 #define _ARG_S_     ...
 #define _STD_BEGIN  namespace std {
@@ -31,9 +30,8 @@
 _CLIB_BEGIN
 
 namespace private_utility {
-    // Temporarily discarded ^^^
     _CLIB_PRIVATE_UTILITY template <typename _Type>
-    _DISCARDED class _Has_Iterator {
+    struct _Has_Iterator {
         template <typename _Test_Type,
             typename = decltype(_STD declval<_Test_Type>().begin()),
             typename = decltype(_STD declval<_Test_Type>().end())>
@@ -41,12 +39,56 @@ namespace private_utility {
             return true;
         }
         template <typename _Test_Type>
-        static constexpr bool _Is_Iterable(...) {
+        static constexpr bool _Is_Iterable(_ARG_S_) {
             return false;
         }
         static constexpr bool value = _Is_Iterable<_Type>();
     };
-    // vvv
+
+    template <typename _Iter>
+    _NODISCARD _STD string _format_container(_Iter _Beg, _Iter _End, const _STD string& _Op, const _STD string& _Ed) {
+        _STD stringstream _Rst;
+        _Rst << _Op;
+        while (_Beg != _End) {
+            _Rst << _STD format("{}", *_Beg);
+            ++_Beg;
+            if (_Beg != _End) { _Rst << ", "; }
+        }
+        return _Rst.str() + _Ed;
+    }
+
+    template <typename _Type>
+    _NODISCARD _STD string _format_sequence_containers(_Type _Val)
+        requires _Has_Iterator<_Type>::value {
+        return _format_container(_Val.begin(), _Val.end(), "[", "]");
+    }
+
+    template <typename _Type>
+    _NODISCARD _STD string _format_associative_containers(_Type _Val)
+        requires _Has_Iterator<_Type>::value {
+        return _format_container(_Val.begin(), _Val.end(), "{", "}");
+    }
+
+    //  Template conflicted ^^^
+    //  template <typename _Type>
+    //  _STD string _format_associative_pair_containers(_Type _Val)
+    //      requires _Has_Iterator<_Type>::value {
+    //      return _format_container(_Val.begin(), _Val.end(), "{", "}");
+    //  }
+    //  - - - - - - - - - - vvv
+
+    template <typename _Type>
+    _NODISCARD _STD string _format_associative_pair_containers(_Type _Val) {
+        _STD stringstream _Rst;
+        _Rst << "{";
+        auto __iter = _Val.begin();
+        while (__iter != _Val.end()) {
+            _Rst << _STD format("({} -> {})", __iter->first, __iter->second);
+            ++__iter;
+            if (__iter != _Val.end()) { _Rst << ", "; }
+        }
+        return _Rst.str() + "}";
+    }
 }
 
 _CLIB_END
@@ -69,15 +111,7 @@ template <typename _T, size_t _Size>
 struct formatter<array<_T, _Size>> : formatter<string_view> {
     template <typename _Fmt_Cont>
     auto format(const array<_T, _Size>& __v, _Fmt_Cont& __ctx) {
-        string _Rst = "[";
-        for (size_t __loc{}; __loc < __v.size(); ++__loc) {
-            _Rst += _STD format("{}", __v[__loc]);
-            if (__loc < __v.size() - 1) {
-                _Rst += ", ";
-            }
-        }
-        _Rst.push_back(']');
-        return formatter<string_view>::format(_Rst, __ctx);
+        return formatter<string_view>::format(clib::private_utility::_format_sequence_containers(__v), __ctx);
     }
 };
 
@@ -86,15 +120,7 @@ template <typename _T, typename _Alloc>
 struct formatter<vector<_T, _Alloc>> : formatter<string_view> {
     template <typename _Fmt_Cont>
     auto format(const vector<_T, _Alloc>& __v, _Fmt_Cont& __ctx) {
-        string _Rst = "[";
-        for (size_t __loc{}; __loc < __v.size(); ++__loc) {
-            _Rst += _STD format("{}", __v[__loc]);
-            if (__loc < __v.size() - 1) {
-                _Rst += ", ";
-            }
-        }
-        _Rst.push_back(']');
-        return formatter<string_view>::format(_Rst, __ctx);
+        return formatter<string_view>::format(clib::private_utility::_format_sequence_containers(__v), __ctx);
     }
 };
 
@@ -103,15 +129,7 @@ template <typename _T, typename _Alloc>
 struct formatter<deque<_T, _Alloc>> : formatter<string_view> {
     template <typename _Fmt_Cont>
     auto format(const deque<_T, _Alloc>& __v, _Fmt_Cont& __ctx) {
-        string _Rst = "[";
-        for (size_t __loc{}; __loc < __v.size(); ++__loc) {
-            _Rst += _STD format("{}", __v[__loc]);
-            if (__loc < __v.size() - 1) {
-                _Rst += ", ";
-            }
-        }
-        _Rst.push_back(']');
-        return formatter<string_view>::format(_Rst, __ctx);
+        return formatter<string_view>::format(clib::private_utility::_format_sequence_containers(__v), __ctx);
     }
 };
 
@@ -120,17 +138,7 @@ template <typename _T, typename _Alloc>
 struct formatter<list<_T, _Alloc>> : formatter<string_view> {
     template <typename _Fmt_Cont>
     auto format(const list<_T, _Alloc>& __v, _Fmt_Cont& __ctx) {
-        string _Rst = "[";
-        auto __iter = __v.begin();
-        while (__iter != __v.end()) {
-            _Rst += _STD format("{}", *__iter);
-            ++__iter;
-            if (__iter != __v.end()) {
-                _Rst += ", ";
-            }
-        }
-        _Rst.push_back(']');
-        return formatter<string_view>::format(_Rst, __ctx);
+        return formatter<string_view>::format(clib::private_utility::_format_sequence_containers(__v), __ctx);
     }
 };
 
@@ -139,22 +147,7 @@ template <typename _T, typename _Alloc>
 struct formatter<forward_list<_T, _Alloc>> : formatter<string_view> {
     template <typename _Fmt_Cont>
     auto format(const forward_list<_T, _Alloc>& __v, _Fmt_Cont& __ctx) {
-        string _Rst = "[";
-        auto __iter = __v.begin();
-        auto __end = __v.end();
-        if (__iter != __end) {
-            while (true) {
-                _Rst += _STD format("{}", *__iter);
-                ++__iter;
-                if (__iter != __end) {
-                    _Rst += ", ";
-                } else {
-                    break;
-                }
-            }
-        }
-        _Rst.push_back(']');
-        return formatter<string_view>::format(_Rst, __ctx);
+        return formatter<string_view>::format(clib::private_utility::_format_sequence_containers(__v), __ctx);
     }
 };
 
@@ -163,17 +156,7 @@ template <typename _T, typename _Cmp, typename _Alloc>
 struct formatter<set<_T, _Cmp, _Alloc>> : formatter<string_view> {
     template <typename _Fmt_Cont>
     auto format(const set<_T, _Cmp, _Alloc>& __v, _Fmt_Cont& __ctx) {
-        string _Rst = "{";
-        auto __it = __v.begin();
-        while (__it != __v.end()) {
-            _Rst += _STD format("{}", *__it);
-            ++__it;
-            if (__it != __v.end()) {
-                _Rst += ", ";
-            }
-        }
-        _Rst.push_back('}');
-        return formatter<string_view>::format(_Rst, __ctx);
+        return formatter<string_view>::format(clib::private_utility::_format_associative_containers(__v), __ctx);
     }
 };
 
@@ -182,17 +165,7 @@ template <typename _Key, typename _Tp, typename _Cmp, typename _Alloc>
 struct formatter<map<_Key, _Tp, _Cmp, _Alloc>> : formatter<string_view> {
     template <typename _Fmt_Cont>
     auto format(const map<_Key, _Tp, _Cmp, _Alloc>& __v, _Fmt_Cont& __ctx) {
-        string _Rst = "{";
-        auto __it = __v.begin();
-        while (__it != __v.end()) {
-            _Rst += _STD format("({} -> {})", __it->first, __it->second);
-            ++__it;
-            if (__it != __v.end()) {
-                _Rst += ", ";
-            }
-        }
-        _Rst.push_back('}');
-        return formatter<string_view>::format(_Rst, __ctx);
+        return formatter<string_view>::format(clib::private_utility::_format_associative_pair_containers(__v), __ctx);
     }
 };
 
@@ -201,17 +174,7 @@ template <typename _T, typename _Cmp, typename _Alloc>
 struct formatter<multiset<_T, _Cmp, _Alloc>> : formatter<string_view> {
     template <typename _Fmt_Cont>
     auto format(const multiset<_T, _Cmp, _Alloc>& __v, _Fmt_Cont& __ctx) {
-        string _Rst = "{";
-        auto __it = __v.begin();
-        while (__it != __v.end()) {
-            _Rst += _STD format("{}", *__it);
-            ++__it;
-            if (__it != __v.end()) {
-                _Rst += ", ";
-            }
-        }
-        _Rst.push_back('}');
-        return formatter<string_view>::format(_Rst, __ctx);
+        return formatter<string_view>::format(clib::private_utility::_format_associative_containers(__v), __ctx);
     }
 };
 
@@ -220,17 +183,7 @@ template <typename _Key, typename _Tp, typename _Cmp, typename _Alloc>
 struct formatter<multimap<_Key, _Tp, _Cmp, _Alloc>> : formatter<string_view> {
     template <typename _Fmt_Cont>
     auto format(const multimap<_Key, _Tp, _Cmp, _Alloc>& __v, _Fmt_Cont& __ctx) {
-        string _Rst = "{";
-        auto __it = __v.begin();
-        while (__it != __v.end()) {
-            _Rst += _STD format("({} -> {})", __it->first, __it->second);
-            ++__it;
-            if (__it != __v.end()) {
-                _Rst += ", ";
-            }
-        }
-        _Rst.push_back('}');
-        return formatter<string_view>::format(_Rst, __ctx);
+        return formatter<string_view>::format(clib::private_utility::_format_associative_pair_containers(__v), __ctx);
     }
 };
 
@@ -239,17 +192,7 @@ template <typename _T, typename _Hash, typename _Pred, typename _Alloc>
 struct formatter<unordered_set<_T, _Hash, _Pred, _Alloc>> : formatter<string_view> {
     template <typename _Fmt_Cont>
     auto format(const unordered_set<_T, _Hash, _Pred, _Alloc>& __v, _Fmt_Cont& __ctx) {
-        string _Rst = "{";
-        auto __it = __v.begin();
-        while (__it != __v.end()) {
-            _Rst += _STD format("{}", *__it);
-            ++__it;
-            if (__it != __v.end()) {
-                _Rst += ", ";
-            }
-        }
-        _Rst.push_back('}');
-        return formatter<string_view>::format(_Rst, __ctx);
+        return formatter<string_view>::format(clib::private_utility::_format_associative_containers(__v), __ctx);
     }
 };
 
@@ -258,17 +201,7 @@ template <typename _Key, typename _Tp, typename _Hash, typename _Pred, typename 
 struct formatter<unordered_map<_Key, _Tp, _Hash, _Pred, _Alloc>> : formatter<string_view> {
     template <typename _Fmt_Cont>
     auto format(const unordered_map<_Key, _Tp, _Hash, _Pred, _Alloc>& __v, _Fmt_Cont& __ctx) {
-        string _Rst = "{";
-        auto __it = __v.begin();
-        while (__it != __v.end()) {
-            _Rst += _STD format("({} -> {})", __it->first, __it->second);
-            ++__it;
-            if (__it != __v.end()) {
-                _Rst += ", ";
-            }
-        }
-        _Rst.push_back('}');
-        return formatter<string_view>::format(_Rst, __ctx);
+        return formatter<string_view>::format(clib::private_utility::_format_associative_pair_containers(__v), __ctx);
     }
 };
 
@@ -277,17 +210,7 @@ template <typename _T, typename _Hash, typename _Pred, typename _Alloc>
 struct formatter<unordered_multiset<_T, _Hash, _Pred, _Alloc>> : formatter<string_view> {
     template <typename _Fmt_Cont>
     auto format(const unordered_multiset<_T, _Hash, _Pred, _Alloc>& __v, _Fmt_Cont& __ctx) {
-        string _Rst = "{";
-        auto __it = __v.begin();
-        while (__it != __v.end()) {
-            _Rst += _STD format("{}", *__it);
-            ++__it;
-            if (__it != __v.end()) {
-                _Rst += ", ";
-            }
-        }
-        _Rst.push_back('}');
-        return formatter<string_view>::format(_Rst, __ctx);
+        return formatter<string_view>::format(clib::private_utility::_format_associative_containers(__v), __ctx);
     }
 };
 
@@ -296,17 +219,7 @@ template <typename _Key, typename _Tp, typename _Hash, typename _Pred, typename 
 struct formatter<unordered_multimap<_Key, _Tp, _Hash, _Pred, _Alloc>> : formatter<string_view> {
     template <typename _Fmt_Cont>
     auto format(const unordered_multimap<_Key, _Tp, _Hash, _Pred, _Alloc>& __v, _Fmt_Cont& __ctx) {
-        string _Rst = "{";
-        auto __it = __v.begin();
-        while (__it != __v.end()) {
-            _Rst += _STD format("({} -> {})", __it->first, __it->second);
-            ++__it;
-            if (__it != __v.end()) {
-                _Rst += ", ";
-            }
-        }
-        _Rst.push_back('}');
-        return formatter<string_view>::format(_Rst, __ctx);
+        return formatter<string_view>::format(clib::private_utility::_format_associative_pair_containers(__v), __ctx);
     }
 };
 
