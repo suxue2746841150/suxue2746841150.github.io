@@ -45,6 +45,7 @@ namespace private_utility {
         static constexpr bool value = _Is_Iterable<_Type>();
     };
 
+#ifdef _HAS_CXX20
     template <typename _Iter>
     _NODISCARD _STD string _format_container(_Iter _Beg, _Iter _End, const _STD string& _Op, const _STD string& _Ed) {
         _STD stringstream _Rst;
@@ -89,6 +90,7 @@ namespace private_utility {
         }
         return _Rst.str() + "}";
     }
+#endif // _HAS_CXX20
 }
 
 _CLIB_END
