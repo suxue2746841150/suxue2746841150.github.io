@@ -71,11 +71,10 @@ namespace private_utility {
         requires _is_iterable_v {
         return _format_container(_Val.begin(), _Val.end(), "{", "}");
     }
-#undef _is_iterable_v
-#endif // _is_iterable_v
 
     template <typename _Type>
-    _NODISCARD inline constexpr _STD string _format_associative_pair_containers(_Type _Val) noexcept {
+    _NODISCARD inline constexpr _STD string _format_associative_pair_containers(_Type _Val) noexcept
+        requires _is_iterable_v {
         _STD stringstream _Rst;
         _Rst << "{";
         auto __iter = _Val.begin();
@@ -86,6 +85,9 @@ namespace private_utility {
         }
         return _Rst.str() + "}";
     }
+#undef _is_iterable_v
+#endif // _is_iterable_v
+
 #endif // _HAS_CXX20
 }
 
