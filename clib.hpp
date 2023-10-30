@@ -22,7 +22,7 @@
 #define _NODISCARD  [[nodiscard]]
 #ifndef _ARG_S_
 #define _ARG_S_     ...
-#endif // !_ARG_S_
+#endif // _ARG_S_
 #define _STD_BEGIN  namespace std {
 #define _STD_END    }
 #define _STD        ::std::
