@@ -63,7 +63,7 @@
 <body>
     <div style="width: fit-content; min-width: 1400px">
         <h1 style="text-align: center">clib使用文档</h1>
-        <h1 style="text-align: center; font-size: medium; color: dimgrey">（msvc扩展库，只对msvc上的表现与行为作保证）</h1>
+        <h1 style="text-align: center; font-size: medium; color: dimgrey">（msvc扩展库，只对msvc上的表现与行为负责）</h1>
         <h2 style="font-family: 楷体; font-size: 1.8em"><b>作者：赵梦府</b></h2>
         <i style="color: dimgray">当前版本：1.1-23.1029&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://1drv.ms/u/s!Atyc1DQ8YkHngj7WrarVw9G3em1S?e=FQ7HXj" target="_blank">clib.hpp</a></i>
         <hr />
@@ -122,7 +122,7 @@ std::forward_list&lt;std::unordered_multiset&lt;int&gt;&gt;:
         </div>
         <h3>二、扩展管道运算</h3>
         <p>
-            本库在 clib::chain_utility 名称空间内重载了 operator| 和 operator/ 两个运算符，用于实现容器范围内的不可变管道运算与可变管道运算，由于容器与视图本质并不相同，因此此运算符与 std::views 中重载的管道运算符 operator| 并不相容，如果一定要混合使用，请一定先使用 std::views::all 等函数将容器转换为范围适配器对象
+            本库在 clib::chain_utility 名称空间内重载了 operator| 和 operator/ 两个运算符，用于实现容器范围内的不可变管道运算与可变管道运算，由于容器与视图本质不同，因此此重载运算符与 std::views 中重载的管道运算符 operator| 并不兼容，如果一定要混合使用，请先调用 std::views::all 等函数将容器转换为范围适配器对象
             <h4 style="color: red"><i><b>注意：该重载运算仍处于测试阶段，除非你很清楚你在做什么，否则请不要轻易在项目代码中使用该扩展运算！！！</b></i></h4>
         </p>
         <div class="container">
