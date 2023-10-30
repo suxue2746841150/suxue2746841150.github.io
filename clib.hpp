@@ -56,7 +56,7 @@ namespace private_utility {
 #endif // _HAS_CXX20
 
 #ifdef _HAS_CXX20
-    template <typename _Iter>
+    _CLIB_PRIVATE_UTILITY template <typename _Iter>
     _NODISCARD inline constexpr _STD string _format_container(_Iter _Beg, _Iter _End, const _STD string& _Op, const _STD string& _Ed) noexcept {
         _STD stringstream _Rst;
         _Rst << _Op;
@@ -68,17 +68,17 @@ namespace private_utility {
         return _Rst.str() + _Ed;
     }
 
-    template <_Iterable_Type _Type>
+    _CLIB_PRIVATE_UTILITY template <_Iterable_Type _Type>
     _NODISCARD inline constexpr _STD string _format_sequence_containers(_Type _Val) noexcept {
         return _format_container(_Val.begin(), _Val.end(), "[", "]");
     }
 
-    template <_Iterable_Type _Type>
+    _CLIB_PRIVATE_UTILITY template <_Iterable_Type _Type>
     _NODISCARD inline constexpr _STD string _format_associative_containers(_Type _Val) noexcept {
         return _format_container(_Val.begin(), _Val.end(), "{", "}");
     }
 
-    template <_Iterable_Type _Type>
+    _CLIB_PRIVATE_UTILITY template <_Iterable_Type _Type>
     _NODISCARD inline constexpr _STD string _format_associative_pair_containers(_Type _Val) noexcept {
         _STD stringstream _Rst;
         _Rst << "{";
