@@ -47,7 +47,7 @@ namespace private_utility {
 
 #ifdef _HAS_CXX20
     template <typename _Iter>
-    _NODISCARD _STD string _format_container(_Iter _Beg, _Iter _End, const _STD string& _Op, const _STD string& _Ed) {
+    _NODISCARD inline constexpr _STD string _format_container(_Iter _Beg, _Iter _End, const _STD string& _Op, const _STD string& _Ed) noexcept {
         _STD stringstream _Rst;
         _Rst << _Op;
         while (_Beg != _End) {
@@ -61,13 +61,13 @@ namespace private_utility {
 #ifndef _is_iterable_v
 #define _is_iterable_v _Has_Iterator<_Type>::value
     template <typename _Type>
-    _NODISCARD _STD string _format_sequence_containers(_Type _Val)
+    _NODISCARD inline constexpr _STD string _format_sequence_containers(_Type _Val) noexcept
         requires _is_iterable_v {
         return _format_container(_Val.begin(), _Val.end(), "[", "]");
     }
 
     template <typename _Type>
-    _NODISCARD _STD string _format_associative_containers(_Type _Val)
+    _NODISCARD inline constexpr _STD string _format_associative_containers(_Type _Val) noexcept
         requires _is_iterable_v {
         return _format_container(_Val.begin(), _Val.end(), "{", "}");
     }
@@ -75,7 +75,7 @@ namespace private_utility {
 #endif // _is_iterable_v
 
     template <typename _Type>
-    _NODISCARD _STD string _format_associative_pair_containers(_Type _Val) {
+    _NODISCARD inline constexpr _STD string _format_associative_pair_containers(_Type _Val) noexcept {
         _STD stringstream _Rst;
         _Rst << "{";
         auto __iter = _Val.begin();
@@ -100,7 +100,7 @@ _STD_BEGIN
 template <typename _T, size_t _Size>
 struct formatter<array<_T, _Size>> : formatter<string_view> {
     template <typename _Fmt_Cont>
-    auto format(const array<_T, _Size>& __v, _Fmt_Cont& __ctx) {
+    inline constexpr auto format(const array<_T, _Size>& __v, _Fmt_Cont& __ctx) const {
         return formatter<string_view>::format(clib::private_utility::_format_sequence_containers(__v), __ctx);
     }
 };
@@ -111,7 +111,7 @@ struct formatter<array<_T, _Size>> : formatter<string_view> {
 template <typename _T, typename _Alloc>
 struct formatter<vector<_T, _Alloc>> : formatter<string_view> {
     template <typename _Fmt_Cont>
-    auto format(const vector<_T, _Alloc>& __v, _Fmt_Cont& __ctx) {
+    inline constexpr auto format(const vector<_T, _Alloc>& __v, _Fmt_Cont& __ctx) const {
         return formatter<string_view>::format(clib::private_utility::_format_sequence_containers(__v), __ctx);
     }
 };
@@ -122,7 +122,7 @@ struct formatter<vector<_T, _Alloc>> : formatter<string_view> {
 template <typename _T, typename _Alloc>
 struct formatter<deque<_T, _Alloc>> : formatter<string_view> {
     template <typename _Fmt_Cont>
-    auto format(const deque<_T, _Alloc>& __v, _Fmt_Cont& __ctx) {
+    inline constexpr auto format(const deque<_T, _Alloc>& __v, _Fmt_Cont& __ctx) const {
         return formatter<string_view>::format(clib::private_utility::_format_sequence_containers(__v), __ctx);
     }
 };
@@ -133,7 +133,7 @@ struct formatter<deque<_T, _Alloc>> : formatter<string_view> {
 template <typename _T, typename _Alloc>
 struct formatter<forward_list<_T, _Alloc>> : formatter<string_view> {
     template <typename _Fmt_Cont>
-    auto format(const forward_list<_T, _Alloc>& __v, _Fmt_Cont& __ctx) {
+    inline constexpr auto format(const forward_list<_T, _Alloc>& __v, _Fmt_Cont& __ctx) const {
         return formatter<string_view>::format(clib::private_utility::_format_sequence_containers(__v), __ctx);
     }
 };
@@ -144,7 +144,7 @@ struct formatter<forward_list<_T, _Alloc>> : formatter<string_view> {
 template <typename _T, typename _Alloc>
 struct formatter<list<_T, _Alloc>> : formatter<string_view> {
     template <typename _Fmt_Cont>
-    auto format(const list<_T, _Alloc>& __v, _Fmt_Cont& __ctx) {
+    inline constexpr auto format(const list<_T, _Alloc>& __v, _Fmt_Cont& __ctx) const {
         return formatter<string_view>::format(clib::private_utility::_format_sequence_containers(__v), __ctx);
     }
 };
@@ -155,7 +155,7 @@ struct formatter<list<_T, _Alloc>> : formatter<string_view> {
 template <typename _T, typename _Cmp, typename _Alloc>
 struct formatter<set<_T, _Cmp, _Alloc>> : formatter<string_view> {
     template <typename _Fmt_Cont>
-    auto format(const set<_T, _Cmp, _Alloc>& __v, _Fmt_Cont& __ctx) {
+    inline constexpr auto format(const set<_T, _Cmp, _Alloc>& __v, _Fmt_Cont& __ctx) const {
         return formatter<string_view>::format(clib::private_utility::_format_associative_containers(__v), __ctx);
     }
 };
@@ -164,7 +164,7 @@ struct formatter<set<_T, _Cmp, _Alloc>> : formatter<string_view> {
 template <typename _T, typename _Cmp, typename _Alloc>
 struct formatter<multiset<_T, _Cmp, _Alloc>> : formatter<string_view> {
     template <typename _Fmt_Cont>
-    auto format(const multiset<_T, _Cmp, _Alloc>& __v, _Fmt_Cont& __ctx) {
+    inline constexpr auto format(const multiset<_T, _Cmp, _Alloc>& __v, _Fmt_Cont& __ctx) const {
         return formatter<string_view>::format(clib::private_utility::_format_associative_containers(__v), __ctx);
     }
 };
@@ -175,7 +175,7 @@ struct formatter<multiset<_T, _Cmp, _Alloc>> : formatter<string_view> {
 template <typename _Key, typename _Tp, typename _Cmp, typename _Alloc>
 struct formatter<map<_Key, _Tp, _Cmp, _Alloc>> : formatter<string_view> {
     template <typename _Fmt_Cont>
-    auto format(const map<_Key, _Tp, _Cmp, _Alloc>& __v, _Fmt_Cont& __ctx) {
+    inline constexpr auto format(const map<_Key, _Tp, _Cmp, _Alloc>& __v, _Fmt_Cont& __ctx) const {
         return formatter<string_view>::format(clib::private_utility::_format_associative_pair_containers(__v), __ctx);
     }
 };
@@ -184,7 +184,7 @@ struct formatter<map<_Key, _Tp, _Cmp, _Alloc>> : formatter<string_view> {
 template <typename _Key, typename _Tp, typename _Cmp, typename _Alloc>
 struct formatter<multimap<_Key, _Tp, _Cmp, _Alloc>> : formatter<string_view> {
     template <typename _Fmt_Cont>
-    auto format(const multimap<_Key, _Tp, _Cmp, _Alloc>& __v, _Fmt_Cont& __ctx) {
+    inline constexpr auto format(const multimap<_Key, _Tp, _Cmp, _Alloc>& __v, _Fmt_Cont& __ctx) const {
         return formatter<string_view>::format(clib::private_utility::_format_associative_pair_containers(__v), __ctx);
     }
 };
@@ -195,7 +195,7 @@ struct formatter<multimap<_Key, _Tp, _Cmp, _Alloc>> : formatter<string_view> {
 template <typename _T, typename _Hash, typename _Pred, typename _Alloc>
 struct formatter<unordered_set<_T, _Hash, _Pred, _Alloc>> : formatter<string_view> {
     template <typename _Fmt_Cont>
-    auto format(const unordered_set<_T, _Hash, _Pred, _Alloc>& __v, _Fmt_Cont& __ctx) {
+    inline constexpr auto format(const unordered_set<_T, _Hash, _Pred, _Alloc>& __v, _Fmt_Cont& __ctx) const {
         return formatter<string_view>::format(clib::private_utility::_format_associative_containers(__v), __ctx);
     }
 };
@@ -204,7 +204,7 @@ struct formatter<unordered_set<_T, _Hash, _Pred, _Alloc>> : formatter<string_vie
 template <typename _T, typename _Hash, typename _Pred, typename _Alloc>
 struct formatter<unordered_multiset<_T, _Hash, _Pred, _Alloc>> : formatter<string_view> {
     template <typename _Fmt_Cont>
-    auto format(const unordered_multiset<_T, _Hash, _Pred, _Alloc>& __v, _Fmt_Cont& __ctx) {
+    inline constexpr auto format(const unordered_multiset<_T, _Hash, _Pred, _Alloc>& __v, _Fmt_Cont& __ctx) const {
         return formatter<string_view>::format(clib::private_utility::_format_associative_containers(__v), __ctx);
     }
 };
@@ -215,7 +215,7 @@ struct formatter<unordered_multiset<_T, _Hash, _Pred, _Alloc>> : formatter<strin
 template <typename _Key, typename _Tp, typename _Hash, typename _Pred, typename _Alloc>
 struct formatter<unordered_map<_Key, _Tp, _Hash, _Pred, _Alloc>> : formatter<string_view> {
     template <typename _Fmt_Cont>
-    auto format(const unordered_map<_Key, _Tp, _Hash, _Pred, _Alloc>& __v, _Fmt_Cont& __ctx) {
+    inline constexpr auto format(const unordered_map<_Key, _Tp, _Hash, _Pred, _Alloc>& __v, _Fmt_Cont& __ctx) const {
         return formatter<string_view>::format(clib::private_utility::_format_associative_pair_containers(__v), __ctx);
     }
 };
@@ -224,7 +224,7 @@ struct formatter<unordered_map<_Key, _Tp, _Hash, _Pred, _Alloc>> : formatter<str
 template <typename _Key, typename _Tp, typename _Hash, typename _Pred, typename _Alloc>
 struct formatter<unordered_multimap<_Key, _Tp, _Hash, _Pred, _Alloc>> : formatter<string_view> {
     template <typename _Fmt_Cont>
-    auto format(const unordered_multimap<_Key, _Tp, _Hash, _Pred, _Alloc>& __v, _Fmt_Cont& __ctx) {
+    inline constexpr auto format(const unordered_multimap<_Key, _Tp, _Hash, _Pred, _Alloc>& __v, _Fmt_Cont& __ctx) const {
         return formatter<string_view>::format(clib::private_utility::_format_associative_pair_containers(__v), __ctx);
     }
 };
@@ -241,7 +241,7 @@ _CHAIN_UTILITY_BEGIN
 
 _EXPORT_CLIB template <class _Cont, class ..._Args> // Immutable Range Operations
     requires (_STD regular_invocable<_Args, typename _Cont::value_type&>&& _ARG_S_)
-_NODISCARD _Cont operator|(_Cont _Val, _Args&& ..._Func) {
+_NODISCARD inline constexpr _Cont operator|(_Cont _Val, _Args&& ..._Func) noexcept {
     for (auto&& _Ele : _Val) {
         (_Func(_Ele), _ARG_S_);
     }
@@ -250,7 +250,7 @@ _NODISCARD _Cont operator|(_Cont _Val, _Args&& ..._Func) {
 
 _EXPORT_CLIB template <class _Cont, class ..._Args> // Mutable Range Operations
     requires (_STD regular_invocable<_Args, typename _Cont::value_type&>&& _ARG_S_)
-_NODISCARD _Cont& operator/(_Cont& _Val, _Args&& ..._Func) {
+_NODISCARD inline constexpr _Cont& operator/(_Cont& _Val, _Args&& ..._Func) noexcept {
     for (auto&& _Ele : _Val) {
         (_Func(_Ele), _ARG_S_);
     }
