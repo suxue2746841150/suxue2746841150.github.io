@@ -58,25 +58,21 @@ namespace private_utility {
         return _Rst.str() + _Ed;
     }
 
+#ifndef _is_iterable_v
+#define _is_iterable_v _Has_Iterator<_Type>::value
     template <typename _Type>
     _NODISCARD _STD string _format_sequence_containers(_Type _Val)
-        requires _Has_Iterator<_Type>::value {
+        requires _is_iterable_v {
         return _format_container(_Val.begin(), _Val.end(), "[", "]");
     }
 
     template <typename _Type>
     _NODISCARD _STD string _format_associative_containers(_Type _Val)
-        requires _Has_Iterator<_Type>::value {
+        requires _is_iterable_v {
         return _format_container(_Val.begin(), _Val.end(), "{", "}");
     }
-
-    //  Template conflicted ^^^
-    //  template <typename _Type>
-    //  _STD string _format_associative_pair_containers(_Type _Val)
-    //      requires _Has_Iterator<_Type>::value {
-    //      return _format_container(_Val.begin(), _Val.end(), "{", "}");
-    //  }
-    //  - - - - - - - - - - vvv
+#undef _is_iterable_v
+#endif // _is_iterable_v
 
     template <typename _Type>
     _NODISCARD _STD string _format_associative_pair_containers(_Type _Val) {
