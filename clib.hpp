@@ -265,7 +265,7 @@ _NODISCARD inline constexpr _Cont operator|(_Cont _Val, _Args&& ..._Func) {
 
 _EXPORT_CLIB template <clib::private_utility::_Iterable_Type _Cont, class ..._Args> // Mutable Range Operations
     requires (_STD regular_invocable<_Args, typename _Cont::value_type&>&& _ARG_S_)
-_NODISCARD inline constexpr _Cont& operator/(_Cont& _Val, _Args&& ..._Func) {
+inline constexpr _Cont& operator/(_Cont& _Val, _Args&& ..._Func) {
     _STD ranges::for_each(_Val, [&](auto&& _Ele) { (_Func(_Ele), _ARG_S_); });
     return _Val;
 }
