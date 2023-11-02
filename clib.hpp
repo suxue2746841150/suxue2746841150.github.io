@@ -3,7 +3,7 @@
 /**************************************************
 |=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=|
 |-  Author: Zhao Mengfu                          -|
-|=  Version: 1.3-23.1102(a)                      =|
+|=  Version: 1.3-23.1102(b)                      =|
 |-  Compiler: Microsoft Visual C++ 2022 v17.7.6  -|
 |=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=|
 **************************************************/
@@ -60,6 +60,9 @@ namespace private_utility {
     _EXPORT_CLIB_PRIVATE_UTILITY template <typename _Iter>
     _NODISCARD inline constexpr _STD string _format_container(_Iter, _Iter, const _STD string&, _STD string_view, _STD string_view, _STD string_view, const _STD string&) noexcept;
 
+    _EXPORT_CLIB_PRIVATE_UTILITY template<typename _Tp, size_t ..._Args>
+        _NODISCARD inline constexpr _STD string _format_tuple(const _Tp& __t, _STD index_sequence<_Args...>) noexcept;
+
     _EXPORT_CLIB_PRIVATE_UTILITY template <_Iterable_Type _Type>
     _NODISCARD inline constexpr _STD string _format_sequence_containers(_Type _Val) noexcept {
         return _format_container(_Val.begin(), _Val.end(), "[", "]");
@@ -73,13 +76,6 @@ namespace private_utility {
     _EXPORT_CLIB_PRIVATE_UTILITY template <_Iterable_Type _Type>
     _NODISCARD inline constexpr _STD string _format_associative_pair_containers(_Type _Val) noexcept {
         return _format_container(_Val.begin(), _Val.end(), "{", "(", " -> ", ")", "}");
-    }
-
-    _EXPORT_CLIB_PRIVATE_UTILITY template<typename _Tp, size_t ..._Args>
-    _NODISCARD inline constexpr _STD string _format_tuple(const _Tp& __t, _STD index_sequence<_Args...>) noexcept {
-        _STD stringstream _Rst;
-        ((_Rst << (_Args ? ", " : "") << _STD format("{}", _STD get<_Args>(__t))), _ARG_S_);
-        return _Rst.str();
     }
 #endif // _HAS_CXX20
 } // namespace private_utility
@@ -302,6 +298,13 @@ namespace private_utility {
             if (_Beg != _End) { _Rst << ", "; }
         }
         return _Rst.str() + _Ed;
+    }
+
+    _EXPORT_CLIB_PRIVATE_UTILITY template<typename _Tp, size_t ..._Args>
+        _NODISCARD inline constexpr _STD string _format_tuple(const _Tp& __t, _STD index_sequence<_Args...>) noexcept {
+        _STD stringstream _Rst;
+        ((_Rst << (_Args ? ", " : "") << _STD format("{}", _STD get<_Args>(__t))), _ARG_S_);
+        return _Rst.str();
     }
 #endif // _HAS_CXX20
     _EXPORT_CLIB_PRIVATE_UTILITY template <typename _Type>
