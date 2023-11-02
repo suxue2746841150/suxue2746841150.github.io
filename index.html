@@ -59,17 +59,18 @@
 <body>
     <div style="width: fit-content; min-width: 1400px">
         <h1 style="text-align: center">clib使用文档</h1>
-        <h1 style="text-align: center; font-size: medium; color: dimgrey">（msvc扩展库，只对msvc上的表现与行为负责）</h1>
+        <h1 style="text-align: center; font-size: medium; color: dimgrey">（msvc扩展库，仅对msvc上的表现与行为负责）</h1>
         <h2 style="font-family: 楷体; font-size: 1.8em"><b>作者：赵梦府</b></h2>
-        <i style="color: dimgray">当前版本：1.2-23.1031(c)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Download：&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://1drv.ms/u/s!Atyc1DQ8YkHngj7WrarVw9G3em1S?e=FQ7HXj" target="_blank">下载clib.hpp</a>（来源：OneDrive）&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://clib.download.awiki.org" target="_blank">下载zip</a>（来源：GitHub）</i>
+        <i style="color: dimgray">当前版本：1.3-23.1102(a)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Download：&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://1drv.ms/u/s!Atyc1DQ8YkHngj7WrarVw9G3em1S?e=FQ7HXj" target="_blank">下载clib.hpp</a>（来源：OneDrive）&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://clib.download.awiki.org" target="_blank">下载zip</a>（来源：GitHub）</i>
         <hr />
-        <h3>一、formatter特化</h3>
+        <h3>一、formatter特化<span style="color:darkmagenta; font-size: 0.85em">（C++20）</span></h3>
         <p>
-            对于实现了<i><a href="https://zh.cppreference.com/w/cpp/named_req/ForwardIterator" target="_blank" style="color: firebrick">老式向前迭代器(LegacyForwardIterator)</a></i> 的序列容器，本库为其提供了基础格式化器，可以支持任意多维度的容器格式化（暂不支持自定义格式说明）<br />
+            对于标准库中实现了<i><a href="https://zh.cppreference.com/w/cpp/named_req/ForwardIterator" target="_blank" style="color: firebrick">老式向前迭代器(LegacyForwardIterator)</a></i> 的序列容器及元组类，本库为其提供了基础格式化器，方便输出复杂的嵌套容器（暂不支持自定义格式说明）<br />
             <h4><i>已支持的标准库容器：</i></h4>
             <h4>顺序容器：<span style="color: blue"><a href="https://zh.cppreference.com/w/cpp/container/array" target="_blank" style="color: blue">std::array</a>、<a href="https://zh.cppreference.com/w/cpp/container/vector" target="_blank" style="color: blue">std::vector</a>、<a href="https://zh.cppreference.com/w/cpp/container/deque" target="_blank" style="color: blue">std::deque</a>、<a href="https://zh.cppreference.com/w/cpp/container/forward_list" target="_blank" style="color: blue">std::forward_list</a>、<a href="https://zh.cppreference.com/w/cpp/container/list" target="_blank" style="color: blue">std::list</a></span></h4>
             <h4>关联容器：<span style="color: blueviolet"><a href="https://zh.cppreference.com/w/cpp/container/set" target="_blank" style="color: blueviolet">std::set</a>、<a href="https://zh.cppreference.com/w/cpp/container/map" target="_blank" style="color: blueviolet">std::map</a>、<a href="https://zh.cppreference.com/w/cpp/container/multiset" target="_blank" style="color: blueviolet">std::multiset</a>、<a href="https://zh.cppreference.com/w/cpp/container/multimap" target="_blank" style="color: blueviolet">std::multimap</a></span></h4>
             <h4>无序关联容器：<span style="color: darkmagenta"><a href="https://zh.cppreference.com/w/cpp/container/unordered_set" target="_blank" style="color: darkmagenta">std::unordered_set</a>、<a href="https://zh.cppreference.com/w/cpp/container/unordered_map" target="_blank" style="color: darkmagenta">std::unordered_map</a>、<a href="https://zh.cppreference.com/w/cpp/container/unordered_multiset" target="_blank" style="color: darkmagenta">std::unordered_multiset</a>、<a href="https://zh.cppreference.com/w/cpp/container/unordered_multimap" target="_blank" style="color: darkmagenta">std::unordered_multimap</a></span></h4>
+            <h4>异类值集合类：<span style="color: fuchsia"><a href="https://zh.cppreference.com/w/cpp/utility/pair" target="_blank" style="color: fuchsia">std::pair</a>、<a href="https://zh.cppreference.com/w/cpp/utility/tuple" target="_blank" style="color: fuchsia">std::tuple</a></span></h4>
         </p>
         <div class="container">
             <div class="code-block">
@@ -77,23 +78,20 @@
                 <pre>
                 <code class="language-cpp">
 <span style="color: gray">#include</span> <span style="color: crimson">&lt;print&gt;</span>
-<span style="color: gray">#include</span> <span style="color: crimson">&lt;vector&gt;</span>
-<span style="color: gray">#include</span> <span style="color: crimson">&lt;deque&gt;</span>
-<span style="color: gray">#include</span> <span style="color: crimson">&lt;forward_list&gt;</span>
-<span style="color: gray">#include</span> <span style="color: crimson">&lt;list&gt;</span>
-<span style="color: gray">#include</span> <span style="color: crimson">&lt;map&gt;</span>
-<span style="color: gray">#include</span> <span style="color: crimson">&lt;unordered_set&gt;</span>
 <span style="color: gray">#include</span> <span style="color: crimson">"clib.hpp"</span>
+<span style="color: gray">#include</span> <span style="color: crimson">&lt;vector&gt;</span>
+<span style="color: gray">#include</span> <span style="color: crimson">&lt;forward_list&gt;</span>
+<span style="color: gray">#include</span> <span style="color: crimson">&lt;unordered_map&gt;</span>
+<span style="color: gray">#include</span> <span style="color: crimson">&lt;tuple&gt;</span>
 
 <span style="color: blue">int</span> <span style="color: brown">main</span>() {
-    std::<span style="color: brown">println</span>(<span style="color: crimson">"std::vector&lt;int&gt;:</span><span style="color: mediumpurple">\n\t</span><span style="color: crimson">{}"</span>,
-        std::<span style="color: darkturquoise">vector</span>&lt;<span style="color: blue">char</span>&gt;{ <span style="color: crimson">'+'</span>, <span style="color: crimson">'-'</span>, <span style="color: crimson">'*'</span>, <span style="color: crimson">'/'</span> });
-    std::<span style="color: brown">println</span>(<span style="color: crimson">"std::deque&lt;std::list&lt;int&gt;&gt;:</span><span style="color: mediumpurple">\n\t</span><span style="color: crimson">{}"</span>,
-        std::<span style="color: darkturquoise">deque</span>&lt;std::<span style="color: darkturquoise">list</span>&lt;<span style="color: blue">int</span>&gt;&gt;{ { 1, 2 }, { 3, 4 } });
-    std::<span style="color: brown">println</span>(<span style="color: crimson">"std::map&lt;std::string, double&gt;:</span><span style="color: mediumpurple">\n\t</span><span style="color: crimson">{}"</span>,
-        std::<span style="color: darkturquoise">map</span>&lt;std::<span style="color: darkturquoise">string</span>, <span style="color: blue">double</span>&gt;{ { <span style="color: crimson">"abc"</span>, 1.5 }, { <span style="color: crimson">"bcd"</span>, 2.4 } });
-    std::<span style="color: brown">println</span>(<span style="color: crimson">"std::forward_list&lt;std::unordered_multiset&lt;int&gt;&gt;:</span><span style="color: mediumpurple">\n\t</span><span style="color: crimson">{}"</span>,
-        std::<span style="color: darkturquoise">forward_list</span>&lt;std::<span style="color: darkturquoise">unordered_multiset</span>&lt;<span style="color: blue">int</span>&gt;&gt;{ { 1, 1, 2 }, { 2, 3, 3 } });
+    <span style="color: blue">using</span> <span style="color: darkturquoise">v_i</span> = std::<span style="color: darkturquoise">vector</span>&lt;<span style="color: blue">int</span>&gt;;
+    <span style="color: blue">using</span> <span style="color: darkturquoise">fl_sv</span> = std::<span style="color: darkturquoise">forward_list</span>&lt;std::<span style="color: darkturquoise">string_view</span>&gt;;
+    <span style="color: blue">using</span> <span style="color: darkturquoise">t_fs_d</span> = std::<span style="color: darkturquoise">tuple</span>&lt;<span style="color: darkturquoise">fl_sv</span>, std::<span style="color: darkturquoise">string</span>, <span style="color: blue">double</span>&gt;;
+    <span style="color: blue">using</span> <span style="color: darkturquoise">um_i_pii</span> = std::<span style="color: darkturquoise">unordered_map</span>&lt;<span style="color: blue">int</span>, std::<span style="color: darkturquoise">pair</span>&lt;<span style="color: blue">int</span>, <span style="color: blue">int</span>&gt;&gt;;
+    std::<span style="color: brown">println</span>(<span style="color: crimson">"{}"</span>, <span style="color: darkturquoise">v_i</span>{ 1, 2, 3 });
+    std::<span style="color: brown">println</span>(<span style="color: crimson">"{}"</span>, <span style="color: darkturquoise">t_fs_d</span>{ <span style="color: darkturquoise">fl_sv</span>{ <span style="color: crimson">"Hello"</span>, <span style="color: crimson">"World"</span> }, <span style="color: crimson">"！！！"</span>, 3.14 });
+    std::<span style="color: brown">println</span>(<span style="color: crimson">"{}"</span>, <span style="color: darkturquoise">um_i_pii</span>{ { 8, { 4, 5 } }, { 9, { 6, 7 } } });
 }
                 </code>
             </pre>
@@ -103,22 +101,16 @@
                 <span style="font-size: larger"><i>控制台：</i></span>
                 <pre>
                 <code style="font-family: Monaco" class="console">
-std::vector&lt;char&gt;:
-&nbsp;&nbsp;&nbsp;&nbsp;[+, -, *, /]
-std::deque&lt;std::list&lt;int&gt;&gt;:
-&nbsp;&nbsp;&nbsp;&nbsp;[[1, 2], [3, 4]]
-std::map&lt;std::string, double&gt;:
-&nbsp;&nbsp;&nbsp;&nbsp;{(abc -> 1.5), (bcd -> 2.4)}
-std::forward_list&lt;std::unordered_multiset&lt;int&gt;&gt;:
-&nbsp;&nbsp;&nbsp;&nbsp;[{1, 1, 2}, {2, 3, 3}]
+[1, 2, 3]
+([Hello, World], ！！！, 3.14)
+{(8 -&gt; (4, 5)), (9 -&gt; (6, 7))}
                 </code>
             </pre>
             </div>
         </div>
-        <h3>二、扩展管道运算</h3>
+        <h3>二、扩展管道运算<span style="color:darkmagenta; font-size: 0.85em">（C++20）</span><span style="color: red; font-size: 0.85em"><i><b>（unstable）</b></i></span></h3>
         <p>
-            本库在 clib::chain_utility 名称空间内重载了 operator| 和 operator/ 两个运算符，用于实现容器范围内的不可变管道运算与可变管道运算，由于容器与视图本质不同，因此此重载运算符与 std::views 中重载的管道运算符 operator| 并不兼容，如果一定要混合使用，请先调用 std::views::all 等函数将容器转换为范围适配器对象
-            <h4 style="color: red"><i><b>注意：该重载运算仍处于测试阶段（线程不安全），除非你很清楚你在做什么，否则请不要轻易在多线程项目中使用该扩展运算！！！</b></i></h4>
+            本库在 clib::chain_utility 名称空间内重载了 operator| 和 operator/ 两个运算符，用于实现容器范围内的不可变管道运算与可变管道运算，由于容器与视图本质不同，因此该重载运算符与 std::views 中重载的管道运算符 operator| 并不兼容，如果一定要混合使用，请先调用 std::views::all 等函数将容器转换为范围适配器对象
         </p>
         <div class="container">
             <div class="code-block">
@@ -144,7 +136,8 @@ std::forward_list&lt;std::unordered_multiset&lt;int&gt;&gt;:
         std::<span style="color: brown">println</span>(<span style="color: crimson">"第{}个元素：({} -> {})"</span>, ++<span style="color: cornflowerblue">flag</span>, <span style="color: cornflowerblue">key</span>, <span style="color: cornflowerblue">val</span>);
     }
     std::<span style="color: brown">println</span>(<span style="color: crimson">"map：{}"</span>, <span style="color: cornflowerblue">map</span>);
-    std::<span style="color: brown">println</span>(<span style="color: crimson">"最终map的值受到了可变管道运算调用 [](auto& n) { n.second *= 2; } 的影响，但未受到不可变管道运算调用 [](auto& n) { n.second += 1; } 的影响"</span>);
+    <span style="color: darkgreen">// 最终的值受到了可变管道运算调用 [](auto& n) { n.second *= 2; } 的影响
+    // 但没有受到不可变管道运算调用 [](auto& n) { n.second += 1; } 的影响</span>
 }
                 </code>
             </pre>
@@ -154,13 +147,12 @@ std::forward_list&lt;std::unordered_multiset&lt;int&gt;&gt;:
                 <span style="font-size: larger"><i>控制台：</i></span>
                 <pre>
                 <code style="font-family: Monaco" class="console">
-map：{(1 -> 1), (2 -> 2), (3 -> 3), (4 -> 4)}
-第1个元素：(4 -> 9)
-第2个元素：(3 -> 7)
-第3个元素：(2 -> 5)
-第4个元素：(1 -> 3)
-map：{(1 -> 2), (2 -> 4), (3 -> 6), (4 -> 8)}
-最终map的值受到了可变管道运算调用 [](auto& n) { n.second *= 2; } 的影响，但未受到不可变管道运算调用 [](auto& n) { n.second += 1; } 的影响
+map：{(1 -&gt; 1), (2 -&gt; 2), (3 -&gt; 3), (4 -&gt; 4)}
+第1个元素：(4 -&gt; 9)
+第2个元素：(3 -&gt; 7)
+第3个元素：(2 -&gt; 5)
+第4个元素：(1 -&gt; 3)
+map：{(1 -&gt; 2), (2 -&gt; 4), (3 -&gt; 6), (4 -&gt; 8)}
                 </code>
             </pre>
             </div>
