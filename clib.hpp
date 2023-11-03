@@ -3,7 +3,7 @@
 /**************************************************
 |=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=|
 |-  Author: Zhao Mengfu                          -|
-|=  Version: 1.3-23.1103(a)                      =|
+|=  Version: 1.3-23.1103(b)                      =|
 |-  Compiler: Microsoft Visual C++ 2022 v17.7.6  -|
 |=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=|
 **************************************************/
@@ -48,7 +48,7 @@
 _CLIB_BEGIN
 
 namespace private_utility {
-    _EXPORT_CLIB_PRIVATE_UTILITY template <typename _Type> struct _Has_Iterator;
+    _EXPORT_CLIB_PRIVATE_UTILITY template <typename> struct _Has_Iterator;
 #if _HAS_CXX20
     _EXPORT_CLIB_PRIVATE_UTILITY template <typename _Type>
     concept _Iterable_Type = requires (_Type&& _Val) {
@@ -65,7 +65,7 @@ namespace private_utility {
     _NODISCARD inline constexpr _STD string _format_container(_Iter, _Iter, const _STD string&, _STD string_view, _STD string_view, _STD string_view, const _STD string&) noexcept;
 
     _EXPORT_CLIB_PRIVATE_UTILITY template<typename _Tp, size_t ..._Args>
-        _NODISCARD inline constexpr _STD string _format_tuple(const _Tp& __t, _STD index_sequence<_Args...>) noexcept;
+    _NODISCARD inline constexpr _STD string _format_tuple(const _Tp& __t, _STD index_sequence<_Args...>) noexcept;
 
     _EXPORT_CLIB_PRIVATE_UTILITY template <_Iterable_Type _Type>
     _NODISCARD inline constexpr _STD string _format_sequence_containers(_Type _Val) noexcept {
@@ -92,7 +92,7 @@ _CLIB_END
 _STD_BEGIN
 
 // Template specialization for arrays formatter
-_EXPORT_CLIB_STD template <typename _Ty, size_t _Size> class array;
+_EXPORT_CLIB_STD template <typename, size_t> class array;
 _EXPORT_CLIB template <typename _Ty, size_t _Size>
 struct formatter<array<_Ty, _Size>> : formatter<string_view> {
     template <typename _Fmt_Cont>
@@ -102,7 +102,7 @@ struct formatter<array<_Ty, _Size>> : formatter<string_view> {
 };
 
 // Template specialization for vectors formatter
-_EXPORT_CLIB_STD template <typename _Ty, typename _Alloc> class vector;
+_EXPORT_CLIB_STD template <typename, typename> class vector;
 _EXPORT_CLIB template <typename _Ty, typename _Alloc>
 struct formatter<vector<_Ty, _Alloc>> : formatter<string_view> {
     template <typename _Fmt_Cont>
@@ -112,7 +112,7 @@ struct formatter<vector<_Ty, _Alloc>> : formatter<string_view> {
 };
 
 // Template specialization for deques formatter
-_EXPORT_CLIB_STD template <typename _Ty, typename _Alloc> class deque;
+_EXPORT_CLIB_STD template <typename, typename> class deque;
 _EXPORT_CLIB template <typename _Ty, typename _Alloc>
 struct formatter<deque<_Ty, _Alloc>> : formatter<string_view> {
     template <typename _Fmt_Cont>
@@ -122,7 +122,7 @@ struct formatter<deque<_Ty, _Alloc>> : formatter<string_view> {
 };
 
 // Template specialization for forward_lists formatter
-_EXPORT_CLIB_STD template <typename _Ty, typename _Alloc> class forward_list;
+_EXPORT_CLIB_STD template <typename, typename> class forward_list;
 _EXPORT_CLIB template <typename _Ty, typename _Alloc>
 struct formatter<forward_list<_Ty, _Alloc>> : formatter<string_view> {
     template <typename _Fmt_Cont>
@@ -132,7 +132,7 @@ struct formatter<forward_list<_Ty, _Alloc>> : formatter<string_view> {
 };
 
 // Template specialization for lists formatter
-_EXPORT_CLIB_STD template <typename _Ty, typename _Alloc> class list;
+_EXPORT_CLIB_STD template <typename, typename> class list;
 _EXPORT_CLIB template <typename _Ty, typename _Alloc>
 struct formatter<list<_Ty, _Alloc>> : formatter<string_view> {
     template <typename _Fmt_Cont>
@@ -142,7 +142,7 @@ struct formatter<list<_Ty, _Alloc>> : formatter<string_view> {
 };
 
 // Template specialization for sets formatter
-_EXPORT_CLIB_STD template <typename _Ty, typename _Cmp, typename _Alloc> class set;
+_EXPORT_CLIB_STD template <typename, typename, typename> class set;
 _EXPORT_CLIB template <typename _Ty, typename _Cmp, typename _Alloc>
 struct formatter<set<_Ty, _Cmp, _Alloc>> : formatter<string_view> {
     template <typename _Fmt_Cont>
@@ -152,7 +152,7 @@ struct formatter<set<_Ty, _Cmp, _Alloc>> : formatter<string_view> {
 };
 
 // Template specialization for multisets formatter
-_EXPORT_CLIB_STD template <typename _Ty, typename _Cmp, typename _Alloc> class multiset;
+_EXPORT_CLIB_STD template <typename, typename, typename> class multiset;
 _EXPORT_CLIB template <typename _Ty, typename _Cmp, typename _Alloc>
 struct formatter<multiset<_Ty, _Cmp, _Alloc>> : formatter<string_view> {
     template <typename _Fmt_Cont>
@@ -162,7 +162,7 @@ struct formatter<multiset<_Ty, _Cmp, _Alloc>> : formatter<string_view> {
 };
 
 // Template specialization for maps formatter
-_EXPORT_CLIB_STD template <typename _Key, typename _Tp, typename _Cmp, typename _Alloc> class map;
+_EXPORT_CLIB_STD template <typename, typename, typename, typename> class map;
 _EXPORT_CLIB template <typename _Key, typename _Tp, typename _Cmp, typename _Alloc>
 struct formatter<map<_Key, _Tp, _Cmp, _Alloc>> : formatter<string_view> {
     template <typename _Fmt_Cont>
@@ -172,7 +172,7 @@ struct formatter<map<_Key, _Tp, _Cmp, _Alloc>> : formatter<string_view> {
 };
 
 // Template specialization for multimaps formatter
-_EXPORT_CLIB_STD template <typename _Key, typename _Tp, typename _Cmp, typename _Alloc> class multimap;
+_EXPORT_CLIB_STD template <typename, typename, typename, typename> class multimap;
 _EXPORT_CLIB template <typename _Key, typename _Tp, typename _Cmp, typename _Alloc>
 struct formatter<multimap<_Key, _Tp, _Cmp, _Alloc>> : formatter<string_view> {
     template <typename _Fmt_Cont>
@@ -182,7 +182,7 @@ struct formatter<multimap<_Key, _Tp, _Cmp, _Alloc>> : formatter<string_view> {
 };
 
 // Template specialization for unordered_sets formatter
-_EXPORT_CLIB_STD template <typename _Ty, typename _Hash, typename _Pred, typename _Alloc> class unordered_set;
+_EXPORT_CLIB_STD template <typename, typename, typename, typename> class unordered_set;
 _EXPORT_CLIB template <typename _Ty, typename _Hash, typename _Pred, typename _Alloc>
 struct formatter<unordered_set<_Ty, _Hash, _Pred, _Alloc>> : formatter<string_view> {
     template <typename _Fmt_Cont>
@@ -192,7 +192,7 @@ struct formatter<unordered_set<_Ty, _Hash, _Pred, _Alloc>> : formatter<string_vi
 };
 
 // Template specialization for unordered_multisets formatter
-_EXPORT_CLIB_STD template <typename _Ty, typename _Hash, typename _Pred, typename _Alloc> class unordered_multiset;
+_EXPORT_CLIB_STD template <typename, typename, typename, typename> class unordered_multiset;
 _EXPORT_CLIB template <typename _Ty, typename _Hash, typename _Pred, typename _Alloc>
 struct formatter<unordered_multiset<_Ty, _Hash, _Pred, _Alloc>> : formatter<string_view> {
     template <typename _Fmt_Cont>
@@ -202,7 +202,7 @@ struct formatter<unordered_multiset<_Ty, _Hash, _Pred, _Alloc>> : formatter<stri
 };
 
 // Template specialization for unordered_maps formatter
-_EXPORT_CLIB_STD template <typename _Key, typename _Tp, typename _Hash, typename _Pred, typename _Alloc> class unordered_map;
+_EXPORT_CLIB_STD template <typename, typename, typename, typename, typename> class unordered_map;
 _EXPORT_CLIB template <typename _Key, typename _Tp, typename _Hash, typename _Pred, typename _Alloc>
 struct formatter<unordered_map<_Key, _Tp, _Hash, _Pred, _Alloc>> : formatter<string_view> {
     template <typename _Fmt_Cont>
@@ -212,7 +212,7 @@ struct formatter<unordered_map<_Key, _Tp, _Hash, _Pred, _Alloc>> : formatter<str
 };
 
 // Template specialization for unordered_multimaps formatter
-_EXPORT_CLIB_STD template <typename _Key, typename _Tp, typename _Hash, typename _Pred, typename _Alloc> class unordered_multimap;
+_EXPORT_CLIB_STD template <typename, typename, typename, typename, typename> class unordered_multimap;
 _EXPORT_CLIB template <typename _Key, typename _Tp, typename _Hash, typename _Pred, typename _Alloc>
 struct formatter<unordered_multimap<_Key, _Tp, _Hash, _Pred, _Alloc>> : formatter<string_view> {
     template <typename _Fmt_Cont>
@@ -222,7 +222,7 @@ struct formatter<unordered_multimap<_Key, _Tp, _Hash, _Pred, _Alloc>> : formatte
 };
 
 // Template specialization for pairs formatter
-_EXPORT_CLIB_STD template <class _Ty1, class _Ty2> struct pair;
+_EXPORT_CLIB_STD template <class, class> struct pair;
 _EXPORT_CLIB template <class _Ty1, class _Ty2>
 struct formatter<pair<_Ty1, _Ty2>> : formatter<string_view> {
     template <typename _Fmt_Cont>
@@ -232,7 +232,7 @@ struct formatter<pair<_Ty1, _Ty2>> : formatter<string_view> {
 };
 
 // Template specialization for tuples formatter
-_EXPORT_CLIB_STD template <class ..._Rest> class tuple;
+_EXPORT_CLIB_STD template <class _ARG_S_> class tuple;
 _EXPORT_CLIB template <class ..._Rest>
 struct formatter<tuple<_Rest...>> : formatter<string_view> {
     template <typename _Fmt_Cont>
@@ -305,7 +305,7 @@ namespace private_utility {
     }
 
     _EXPORT_CLIB_PRIVATE_UTILITY template<typename _Tp, size_t ..._Args>
-        _NODISCARD inline constexpr _STD string _format_tuple(const _Tp& __t, _STD index_sequence<_Args...>) noexcept {
+    _NODISCARD inline constexpr _STD string _format_tuple(const _Tp& __t, _STD index_sequence<_Args...>) noexcept {
         _STD stringstream _Rst;
         ((_Rst << (_Args ? ", " : "") << _STD format("{}", _STD get<_Args>(__t))), _ARG_S_);
         return _Rst.str();
@@ -317,7 +317,7 @@ namespace private_utility {
             typename = decltype(_STD declval<_Test_Type>().begin()),
             typename = decltype(_STD declval<_Test_Type>().end())>
         static constexpr bool _Is_Iterable() { return true; }
-        template <typename _Test_Type>
+        template <typename>
         static constexpr bool _Is_Iterable(_ARG_S_) { return false; }
         static constexpr bool value = _Is_Iterable<_Type>();
     };
