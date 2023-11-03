@@ -3,7 +3,7 @@
 /**************************************************
 |=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=|
 |-  Author: Zhao Mengfu                          -|
-|=  Version: 1.3-23.1102(b)                      =|
+|=  Version: 1.3-23.1103(a)                      =|
 |-  Compiler: Microsoft Visual C++ 2022 v17.7.6  -|
 |=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=|
 **************************************************/
@@ -31,8 +31,12 @@
 #include <sstream>
 #include <type_traits>
 
-#define _NODISCARD  [[nodiscard]]
 #define _NORETURN   [[noreturn]]
+#if _HAS_CXX17
+#define _NODISCARD  [[nodiscard]]
+#else
+#define _NODISCARD
+#endif // _HAS_CXX17
 #define _STD_BEGIN  namespace std {
 #define _STD_END    }
 #define _STD        ::std::
@@ -45,7 +49,7 @@ _CLIB_BEGIN
 
 namespace private_utility {
     _EXPORT_CLIB_PRIVATE_UTILITY template <typename _Type> struct _Has_Iterator;
-#ifdef _HAS_CXX20
+#if _HAS_CXX20
     _EXPORT_CLIB_PRIVATE_UTILITY template <typename _Type>
     concept _Iterable_Type = requires (_Type&& _Val) {
         _Val.begin();
@@ -53,7 +57,7 @@ namespace private_utility {
     };
 #endif // _HAS_CXX20
 
-#ifdef _HAS_CXX20
+#if _HAS_CXX20
     _EXPORT_CLIB_PRIVATE_UTILITY template <typename _Iter>
     _NODISCARD inline constexpr _STD string _format_container(_Iter, _Iter, const _STD string&, const _STD string&) noexcept;
 
@@ -82,7 +86,7 @@ namespace private_utility {
 
 _CLIB_END
 
-#ifdef _HAS_CXX20
+#if _HAS_CXX20
 // Template specialization for Containers formatter
 #include <format>
 _STD_BEGIN
@@ -241,7 +245,7 @@ _STD_END
 
 #endif // _HAS_CXX20
 
-#ifdef _HAS_CXX20
+#if _HAS_CXX20
 #include <algorithm>
 #include <ranges>
 #define _CHAIN_UTILITY_BEGIN namespace clib::chain_utility {
@@ -275,7 +279,7 @@ _CHAIN_UTILITY_END
 _CLIB_BEGIN
 
 namespace private_utility {
-#ifdef _HAS_CXX20
+#if _HAS_CXX20
     _EXPORT_CLIB_PRIVATE_UTILITY template <typename _Iter>
     _NODISCARD inline constexpr _STD string _format_container(_Iter _Beg, _Iter _End, const _STD string& _Op, const _STD string& _Ed) noexcept {
         _STD stringstream _Rst;
@@ -321,10 +325,7 @@ namespace private_utility {
 
 _CLIB_END
 
-#ifdef _EXPORT_CLIB_STD
 #undef _EXPORT_CLIB_STD
-#endif // _EXPORT_CLIB_STD
-
 #undef _EXPORT_CLIB_PRIVATE_UTILITY
 #undef _CLIB_BEGIN
 #undef _CLIB_END
