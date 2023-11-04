@@ -75,8 +75,7 @@
         <div class="container">
             <div class="code-block">
                 <span style="font-size: larger"><i>示例代码：</i></span>
-                <pre>
-                <code class="language-cpp">
+<pre><code class="language-cpp">
 <span style="color: gray">#include</span> <span style="color: crimson">&lt;print&gt;</span>
 <span style="color: gray">#include</span> <span style="color: crimson">"clib.hpp"</span>
 <span style="color: gray">#include</span> <span style="color: crimson">&lt;vector&gt;</span>
@@ -93,19 +92,18 @@
     std::<span style="color: brown">println</span>(<span style="color: crimson">"{}"</span>, <span style="color: darkturquoise">t_fs_d</span>{ <span style="color: darkturquoise">fl_sv</span>{ <span style="color: crimson">"Hello"</span>, <span style="color: crimson">"World"</span> }, <span style="color: crimson">"！！！"</span>, 3.14 });
     std::<span style="color: brown">println</span>(<span style="color: crimson">"{}"</span>, <span style="color: darkturquoise">um_i_pii</span>{ { 8, { 4, 5 } }, { 9, { 6, 7 } } });
 }
-                </code>
-            </pre>
+
+</code></pre>
             </div>
             <div class="spacer"></div> <!-- 间隔元素 -->
             <div class="result-block">
                 <span style="font-size: larger"><i>控制台：</i></span>
-                <pre>
-                <code style="font-family: Monaco" class="console">
+<pre><code style="font-family: Monaco" class="console">
 [1, 2, 3]
 ([Hello, World], ！！！, 3.14)
 {(8 -&gt; (4, 5)), (9 -&gt; (6, 7))}
-                </code>
-            </pre>
+
+</code></pre>
             </div>
         </div>
         <h3>二、扩展管道运算<span style="color:darkmagenta; font-size: 0.85em">（C++20）</span><span style="color: red; font-size: 0.85em"><i><b>（unstable）</b></i></span></h3>
@@ -115,8 +113,7 @@
         <div class="container">
             <div class="code-block">
                 <span style="font-size: larger"><i>示例代码：</i></span>
-                <pre>
-                <code class="language-cpp">
+<pre><code class="language-cpp">
 <span style="color: gray">#include</span> <span style="color: crimson">&lt;print&gt;</span>
 <span style="color: gray">#include</span> <span style="color: crimson">&lt;ranges&gt;</span>
 <span style="color: gray">#include</span> <span style="color: crimson">&lt;map&gt;</span>
@@ -139,22 +136,21 @@
     <span style="color: darkgreen">// 最终的值受到了可变管道运算调用 [](auto& n) { n.second *= 2; } 的影响
     // 但没有受到不可变管道运算调用 [](auto& n) { n.second += 1; } 的影响</span>
 }
-                </code>
-            </pre>
+
+</code></pre>
             </div>
             <div class="spacer"></div> <!-- 间隔元素 -->
             <div class="result-block">
                 <span style="font-size: larger"><i>控制台：</i></span>
-                <pre>
-                <code style="font-family: Monaco" class="console">
+<pre><code style="font-family: Monaco" class="console">
 map：{(1 -&gt; 1), (2 -&gt; 2), (3 -&gt; 3), (4 -&gt; 4)}
 第1个元素：(4 -&gt; 9)
 第2个元素：(3 -&gt; 7)
 第3个元素：(2 -&gt; 5)
 第4个元素：(1 -&gt; 3)
 map：{(1 -&gt; 2), (2 -&gt; 4), (3 -&gt; 6), (4 -&gt; 8)}
-                </code>
-            </pre>
+
+</code></pre>
             </div>
         </div>
         <br />
