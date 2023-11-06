@@ -3,7 +3,7 @@
 /**************************************************
 |=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=|
 |-  Author: Zhao Mengfu                          -|
-|=  Version: 1.3-23.1103(b)                      =|
+|=  Version: 1.3-23.1106(a)                      =|
 |-  Compiler: Microsoft Visual C++ 2022 v17.7.6  -|
 |=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=|
 **************************************************/
@@ -40,14 +40,14 @@
 #define _STD_BEGIN  namespace std {
 #define _STD_END    }
 #define _STD        ::std::
-#define _CLIB_BEGIN namespace clib {
+#define _CLIB_BEGIN inline namespace clib {
 #define _CLIB_END   }
 #define _CP_UTILITY clib::private_utility::
 #define _ARG_S_     ...
 
 _CLIB_BEGIN
 
-namespace private_utility {
+inline namespace private_utility {
     _EXPORT_CLIB_PRIVATE_UTILITY template <typename> struct _Has_Iterator;
 #if _HAS_CXX20
     _EXPORT_CLIB_PRIVATE_UTILITY template <typename _Type>
@@ -278,7 +278,7 @@ _CHAIN_UTILITY_END
 
 _CLIB_BEGIN
 
-namespace private_utility {
+inline namespace private_utility {
 #if _HAS_CXX20
     _EXPORT_CLIB_PRIVATE_UTILITY template <typename _Iter>
     _NODISCARD inline constexpr _STD string _format_container(_Iter _Beg, _Iter _End, const _STD string& _Op, const _STD string& _Ed) noexcept {
