@@ -3,7 +3,7 @@
 /**************************************************
 |=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=|
 |-  Author: Zhao Mengfu                          -|
-|=  Version: 1.3-23.1106(a)                      =|
+|=  Version: 1.3-23.1106(b)                      =|
 |-  Compiler: Microsoft Visual C++ 2022 v17.7.6  -|
 |=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=|
 **************************************************/
@@ -14,6 +14,7 @@
 
 #include <yvals_core.h>
 #define _EXPORT_CLIB_STD _EXPORT_STD
+#define _STD             ::std::
 
 #if _HAS_CXX23 && defined(_BUILD_STD_MODULE)
 #define _EXPORT_CLIB export
@@ -37,13 +38,9 @@
 #else
 #define _NODISCARD
 #endif // _HAS_CXX17
-#define _STD_BEGIN  namespace std {
-#define _STD_END    }
-#define _STD        ::std::
 #define _CLIB_BEGIN inline namespace clib {
 #define _CLIB_END   }
 #define _CP_UTILITY clib::private_utility::
-#define _ARG_S_     ...
 
 _CLIB_BEGIN
 
@@ -64,12 +61,12 @@ inline namespace private_utility {
     _EXPORT_CLIB_PRIVATE_UTILITY template <typename _Iter>
     _NODISCARD inline constexpr _STD string _format_container(_Iter, _Iter, const _STD string&, _STD string_view, _STD string_view, _STD string_view, const _STD string&) noexcept;
 
-    _EXPORT_CLIB_PRIVATE_UTILITY template<typename _Tp, size_t ..._Args>
+    _EXPORT_CLIB_PRIVATE_UTILITY template<typename _Tp, size_t... _Args>
     _NODISCARD inline constexpr _STD string _format_tuple(const _Tp& __t, _STD index_sequence<_Args...>) noexcept;
 
     _EXPORT_CLIB_PRIVATE_UTILITY template <_Iterable_Type _Type>
     _NODISCARD inline constexpr _STD string _format_sequence_containers(_Type _Val) noexcept {
-        return _format_container(_Val.begin(), _Val.end(), "[", "]");
+        return _format_container(_Val.begin(), _Val.end());
     }
 
     _EXPORT_CLIB_PRIVATE_UTILITY template <_Iterable_Type _Type>
@@ -87,6 +84,9 @@ inline namespace private_utility {
 _CLIB_END
 
 #if _HAS_CXX20
+#define _STD_BEGIN  namespace std {
+#define _STD_END    }
+
 // Template specialization for Containers formatter
 #include <format>
 _STD_BEGIN
@@ -232,8 +232,8 @@ struct formatter<pair<_Ty1, _Ty2>> : formatter<string_view> {
 };
 
 // Template specialization for tuples formatter
-_EXPORT_CLIB_STD template <class _ARG_S_> class tuple;
-_EXPORT_CLIB template <class ..._Rest>
+_EXPORT_CLIB_STD template <class...> class tuple;
+_EXPORT_CLIB template <class... _Rest>
 struct formatter<tuple<_Rest...>> : formatter<string_view> {
     template <typename _Fmt_Cont>
     inline constexpr auto format(const tuple<_Rest...>& __v, _Fmt_Cont& __ctx) const noexcept {
@@ -255,18 +255,18 @@ _STD_END
 _CHAIN_UTILITY_BEGIN
 
 // Immutable Range Operations
-_EXPORT_CLIB template <_CP_UTILITY _Iterable_Type _Cont, class ..._Args>
-    requires (_STD regular_invocable<_Args, typename _Cont::value_type&>&& _ARG_S_)
-_NODISCARD inline constexpr _Cont operator|(_Cont _Val, _Args&& ..._Func) {
-    _STD ranges::for_each(_Val, [&](auto&& _Ele) { (_Func(_Ele), _ARG_S_); });
+_EXPORT_CLIB template <_CP_UTILITY _Iterable_Type _Cont, class... _Args>
+    requires (_STD regular_invocable<_Args, typename _Cont::value_type&>&&...)
+_NODISCARD inline constexpr _Cont operator|(_Cont _Val, _Args&&... _Func) {
+    _STD ranges::for_each(_Val, [&](auto&& _Ele) { (_Func(_Ele), ...); });
     return _Val;
 }
 
 // Mutable Range Operations
-_EXPORT_CLIB template <_CP_UTILITY _Iterable_Type _Cont, class ..._Args>
-    requires (_STD regular_invocable<_Args, typename _Cont::value_type&>&& _ARG_S_)
-inline constexpr _Cont& operator/(_Cont& _Val, _Args&& ..._Func) {
-    _STD ranges::for_each(_Val, [&](auto&& _Ele) { (_Func(_Ele), _ARG_S_); });
+_EXPORT_CLIB template <_CP_UTILITY _Iterable_Type _Cont, class... _Args>
+    requires (_STD regular_invocable<_Args, typename _Cont::value_type&>&&...)
+inline constexpr _Cont& operator/(_Cont& _Val, _Args&&... _Func) {
+    _STD ranges::for_each(_Val, [&](auto&& _Ele) { (_Func(_Ele), ...); });
     return _Val;
 }
 
@@ -281,7 +281,7 @@ _CLIB_BEGIN
 inline namespace private_utility {
 #if _HAS_CXX20
     _EXPORT_CLIB_PRIVATE_UTILITY template <typename _Iter>
-    _NODISCARD inline constexpr _STD string _format_container(_Iter _Beg, _Iter _End, const _STD string& _Op, const _STD string& _Ed) noexcept {
+    _NODISCARD inline constexpr _STD string _format_container(_Iter _Beg, _Iter _End, const _STD string& _Op = "[", const _STD string& _Ed = "]") noexcept {
         _STD stringstream _Rst;
         _Rst << _Op;
         while (_Beg != _End) {
@@ -304,10 +304,10 @@ inline namespace private_utility {
         return _Rst.str() + _Ed;
     }
 
-    _EXPORT_CLIB_PRIVATE_UTILITY template<typename _Tp, size_t ..._Args>
+    _EXPORT_CLIB_PRIVATE_UTILITY template<typename _Tp, size_t... _Args>
     _NODISCARD inline constexpr _STD string _format_tuple(const _Tp& __t, _STD index_sequence<_Args...>) noexcept {
         _STD stringstream _Rst;
-        ((_Rst << (_Args ? ", " : "") << _STD format("{}", _STD get<_Args>(__t))), _ARG_S_);
+        ((_Rst << (_Args ? ", " : "") << _STD format("{}", _STD get<_Args>(__t))), ...);
         return _Rst.str();
     }
 #endif // _HAS_CXX20
@@ -318,7 +318,7 @@ inline namespace private_utility {
             typename = decltype(_STD declval<_Test_Type>().end())>
         static constexpr bool _Is_Iterable() { return true; }
         template <typename>
-        static constexpr bool _Is_Iterable(_ARG_S_) { return false; }
+        static constexpr bool _Is_Iterable(...) { return false; }
         static constexpr bool value = _Is_Iterable<_Type>();
     };
 } // namespace private_utility
@@ -330,5 +330,4 @@ _CLIB_END
 #undef _CLIB_BEGIN
 #undef _CLIB_END
 #undef _CP_UTILITY
-#undef _ARG_S_
 #endif // _CLIB_
