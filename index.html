@@ -61,16 +61,16 @@
         <h1 style="text-align: center">clib使用文档</h1>
         <h1 style="text-align: center; font-size: medium; color: dimgrey">（msvc扩展库，仅对msvc上的表现与行为负责）</h1>
         <h2 style="font-family: 楷体; font-size: 1.8em"><b>作者：赵梦府</b></h2>
-        <i style="color: dimgray">当前版本：1.3-23.1106(b)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Download：&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://1drv.ms/u/s!Atyc1DQ8YkHngj7WrarVw9G3em1S?e=FQ7HXj" target="_blank">下载clib.hpp</a>（来源：OneDrive）&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://clib.download.awiki.org" target="_blank">下载zip</a>（来源：GitHub）</i>
+        <i style="color: dimgray">当前版本：1.4-23.1109(c)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Download：&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://1drv.ms/u/s!Atyc1DQ8YkHngj7WrarVw9G3em1S?e=FQ7HXj" target="_blank">下载clib.hpp</a>（来源：OneDrive）&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://clib.download.awiki.org" target="_blank">下载zip</a>（来源：GitHub）</i>
         <hr />
         <h3>一、formatter特化<span style="color:darkmagenta; font-size: 0.85em">（C++20）</span></h3>
         <p>
             对于标准库中实现了<i><a href="https://zh.cppreference.com/w/cpp/named_req/ForwardIterator" target="_blank" style="color: firebrick">老式向前迭代器(LegacyForwardIterator)</a></i> 的序列容器及元组类，本库为其提供基础格式化规则（继承自formatter&lt;string_view&gt;），方便输出复杂的嵌套容器（自定义格式说明与string_view相同，若需要更加个性化的格式化规则，请自行修改源码逻辑）<br />
             <h4><i>已支持的标准库容器：</i></h4>
-            <h4>顺序容器：<span style="color: blue"><a href="https://zh.cppreference.com/w/cpp/container/array" target="_blank" style="color: blue">std::array</a>、<a href="https://zh.cppreference.com/w/cpp/container/vector" target="_blank" style="color: blue">std::vector</a>、<a href="https://zh.cppreference.com/w/cpp/container/deque" target="_blank" style="color: blue">std::deque</a>、<a href="https://zh.cppreference.com/w/cpp/container/forward_list" target="_blank" style="color: blue">std::forward_list</a>、<a href="https://zh.cppreference.com/w/cpp/container/list" target="_blank" style="color: blue">std::list</a></span></h4>
-            <h4>关联容器：<span style="color: blueviolet"><a href="https://zh.cppreference.com/w/cpp/container/set" target="_blank" style="color: blueviolet">std::set</a>、<a href="https://zh.cppreference.com/w/cpp/container/map" target="_blank" style="color: blueviolet">std::map</a>、<a href="https://zh.cppreference.com/w/cpp/container/multiset" target="_blank" style="color: blueviolet">std::multiset</a>、<a href="https://zh.cppreference.com/w/cpp/container/multimap" target="_blank" style="color: blueviolet">std::multimap</a></span></h4>
-            <h4>无序关联容器：<span style="color: darkmagenta"><a href="https://zh.cppreference.com/w/cpp/container/unordered_set" target="_blank" style="color: darkmagenta">std::unordered_set</a>、<a href="https://zh.cppreference.com/w/cpp/container/unordered_map" target="_blank" style="color: darkmagenta">std::unordered_map</a>、<a href="https://zh.cppreference.com/w/cpp/container/unordered_multiset" target="_blank" style="color: darkmagenta">std::unordered_multiset</a>、<a href="https://zh.cppreference.com/w/cpp/container/unordered_multimap" target="_blank" style="color: darkmagenta">std::unordered_multimap</a></span></h4>
-            <h4>异类值集合类：<span style="color: fuchsia"><a href="https://zh.cppreference.com/w/cpp/utility/pair" target="_blank" style="color: fuchsia">std::pair</a>、<a href="https://zh.cppreference.com/w/cpp/utility/tuple" target="_blank" style="color: fuchsia">std::tuple</a></span></h4>
+            <h4>顺序容器：<span style="color: darkblue"><a href="https://zh.cppreference.com/w/cpp/container/array" target="_blank" style="color: blue">std::array</a>、<a href="https://zh.cppreference.com/w/cpp/container/vector" target="_blank" style="color: blue">std::vector</a>、<a href="https://zh.cppreference.com/w/cpp/container/deque" target="_blank" style="color: blue">std::deque</a>、<a href="https://zh.cppreference.com/w/cpp/container/forward_list" target="_blank" style="color: blue">std::forward_list</a>、<a href="https://zh.cppreference.com/w/cpp/container/list" target="_blank" style="color: blue">std::list</a>、<a href="https://zh.cppreference.com/w/cpp/container/span" target="_blank" style="color: darkblue">std::span</a>（格式化规则同std::array）</span></h4>
+            <h4>关联容器：<span><a href="https://zh.cppreference.com/w/cpp/container/set" target="_blank" style="color: blueviolet">std::set</a>、<a href="https://zh.cppreference.com/w/cpp/container/map" target="_blank" style="color: blueviolet">std::map</a>、<a href="https://zh.cppreference.com/w/cpp/container/multiset" target="_blank" style="color: blueviolet">std::multiset</a>、<a href="https://zh.cppreference.com/w/cpp/container/multimap" target="_blank" style="color: blueviolet">std::multimap</a></span></h4>
+            <h4>无序关联容器：<span><a href="https://zh.cppreference.com/w/cpp/container/unordered_set" target="_blank" style="color: darkmagenta">std::unordered_set</a>、<a href="https://zh.cppreference.com/w/cpp/container/unordered_map" target="_blank" style="color: darkmagenta">std::unordered_map</a>、<a href="https://zh.cppreference.com/w/cpp/container/unordered_multiset" target="_blank" style="color: darkmagenta">std::unordered_multiset</a>、<a href="https://zh.cppreference.com/w/cpp/container/unordered_multimap" target="_blank" style="color: darkmagenta">std::unordered_multimap</a></span></h4>
+            <h4>异类值集合类：<span><a href="https://zh.cppreference.com/w/cpp/utility/pair" target="_blank" style="color: fuchsia">std::pair</a>、<a href="https://zh.cppreference.com/w/cpp/utility/tuple" target="_blank" style="color: fuchsia">std::tuple</a></span></h4>
         </p>
         <div class="container">
             <div class="code-block">
@@ -82,15 +82,17 @@
 <span style="color: gray">#include</span> <span style="color: crimson">&lt;forward_list&gt;</span>
 <span style="color: gray">#include</span> <span style="color: crimson">&lt;unordered_map&gt;</span>
 <span style="color: gray">#include</span> <span style="color: crimson">&lt;tuple&gt;</span>
+<span style="color: gray">#include</span> <span style="color: crimson">&lt;span&gt;</span>
 
 <span style="color: blue">int</span> <span style="color: brown">main</span>() {
-    <span style="color: blue">using</span> <span style="color: darkturquoise">v_i</span> = std::<span style="color: darkturquoise">vector</span>&lt;<span style="color: blue">int</span>&gt;;
+    std::<span style="color: darkturquoise">vector</span>&lt;<span style="color: blue">int</span>&gt; <span style="color: cornflowerblue">vec</span>{ 1, 2, 3, 4, 5 };
     <span style="color: blue">using</span> <span style="color: darkturquoise">fl_sv</span> = std::<span style="color: darkturquoise">forward_list</span>&lt;std::<span style="color: darkturquoise">string_view</span>&gt;;
     <span style="color: blue">using</span> <span style="color: darkturquoise">t_fs_d</span> = std::<span style="color: darkturquoise">tuple</span>&lt;<span style="color: darkturquoise">fl_sv</span>, std::<span style="color: darkturquoise">string</span>, <span style="color: blue">double</span>&gt;;
     <span style="color: blue">using</span> <span style="color: darkturquoise">um_i_pii</span> = std::<span style="color: darkturquoise">unordered_map</span>&lt;<span style="color: blue">int</span>, std::<span style="color: darkturquoise">pair</span>&lt;<span style="color: blue">int</span>, <span style="color: blue">int</span>&gt;&gt;;
-    std::<span style="color: brown">println</span>(<span style="color: crimson">"{}"</span>, <span style="color: darkturquoise">v_i</span>{ 1, 2, 3 });
+    std::<span style="color: brown">println</span>(<span style="color: crimson">"{}"</span>, <span style="color: cornflowerblue">vec</span>);
     std::<span style="color: brown">println</span>(<span style="color: crimson">"{}"</span>, <span style="color: darkturquoise">t_fs_d</span>{ <span style="color: darkturquoise">fl_sv</span>{ <span style="color: crimson">"Hello"</span>, <span style="color: crimson">"World"</span> }, <span style="color: crimson">"！！！"</span>, 3.14 });
     std::<span style="color: brown">println</span>(<span style="color: crimson">"{}"</span>, <span style="color: darkturquoise">um_i_pii</span>{ { 8, { 4, 5 } }, { 9, { 6, 7 } } });
+    std::<span style="color: brown">println</span>(<span style="color: crimson">"{}"</span>, std::<span style="color: darkturquoise">span</span>&lt;<span style="color: blue">int</span>&gt;{ <span style="color: cornflowerblue">vec</span>.<span style="color: brown">begin</span>(), <span style="color: cornflowerblue">vec</span>.<span style="color: brown">end</span>() - 2 });
 }
 
 </code></pre>
@@ -99,9 +101,10 @@
             <div class="result-block">
                 <span style="font-size: larger"><i>控制台：</i></span>
 <pre><code style="font-family: Monaco" class="console">
-[1, 2, 3]
+[1, 2, 3, 4, 5]
 ([Hello, World], ！！！, 3.14)
-{(8 -&gt; (4, 5)), (9 -&gt; (6, 7))}
+{(8, (4, 5)), (9, (6, 7))}
+[1, 2, 3]
 
 </code></pre>
             </div>
@@ -116,21 +119,21 @@
 <pre><code class="language-cpp">
 <span style="color: gray">#include</span> <span style="color: crimson">&lt;print&gt;</span>
 <span style="color: gray">#include</span> <span style="color: crimson">&lt;ranges&gt;</span>
-<span style="color: gray">#include</span> <span style="color: crimson">&lt;map&gt;</span>
 <span style="color: gray">#include</span> <span style="color: crimson">"clib.hpp"</span>
+<span style="color: gray">#include</span> <span style="color: crimson">&lt;map&gt;</span>
 
 <span style="color: blue">int</span> <span style="color: brown">main</span>() {
     <span style="color: blue">using</span> <span style="color: blue">namespace</span> clib::chain_utility;
     std::<span style="color: darkturquoise">map</span>&lt;<span style="color: blue">int</span>, <span style="color: blue">int</span>&gt; <span style="color: cornflowerblue">map</span>{ { 1, 1 }, { 2, 2 }, { 3, 3 }, { 4, 4 } };
     std::<span style="color: brown">println</span>(<span style="color: crimson">"map：{}"</span>, <span style="color: cornflowerblue">map</span>);
     size_t <span style="color: cornflowerblue">flag</span>{};
-    for (<span style="color: blue">auto</span>&& [<span style="color: cornflowerblue">key</span>, <span style="color: cornflowerblue">val</span>] : <span style="color: cornflowerblue">map</span>
+    for (<span style="color: blue">auto</span>&& <span style="color: cornflowerblue">val</span> : <span style="color: cornflowerblue">map</span>
         / [](<span style="color: blue">auto</span>& <span style="color: gray">n</span>) { <span style="color: gray">n</span>.second *= 2; }
         | [](<span style="color: blue">auto</span>& <span style="color: gray">n</span>) { <span style="color: gray">n</span>.second += 1; }
         | std::views::<span style="color: brown">reverse</span>
         | std::views::<span style="color: brown">all</span>
         | std::views::<span style="color: brown">filter</span>([](<span style="color: blue">auto</span>&&) { <span style="color: blueviolet">return</span> <span style="color: blue">true</span>; })) {
-        std::<span style="color: brown">println</span>(<span style="color: crimson">"第{}个元素：({} -> {})"</span>, ++<span style="color: cornflowerblue">flag</span>, <span style="color: cornflowerblue">key</span>, <span style="color: cornflowerblue">val</span>);
+        std::<span style="color: brown">println</span>(<span style="color: crimson">"第{}个元素：{}"</span>, ++<span style="color: cornflowerblue">flag</span>, <span style="color: cornflowerblue">val</span>);
     }
     std::<span style="color: brown">println</span>(<span style="color: crimson">"map：{}"</span>, <span style="color: cornflowerblue">map</span>);
     <span style="color: darkgreen">// 最终的值受到了可变管道运算调用 [](auto& n) { n.second *= 2; } 的影响
@@ -143,12 +146,12 @@
             <div class="result-block">
                 <span style="font-size: larger"><i>控制台：</i></span>
 <pre><code style="font-family: Monaco" class="console">
-map：{(1 -&gt; 1), (2 -&gt; 2), (3 -&gt; 3), (4 -&gt; 4)}
-第1个元素：(4 -&gt; 9)
-第2个元素：(3 -&gt; 7)
-第3个元素：(2 -&gt; 5)
-第4个元素：(1 -&gt; 3)
-map：{(1 -&gt; 2), (2 -&gt; 4), (3 -&gt; 6), (4 -&gt; 8)}
+map：{(1, 1), (2, 2), (3, 3), (4, 4)}
+第1个元素：(4, 9)
+第2个元素：(3, 7)
+第3个元素：(2, 5)
+第4个元素：(1, 3)
+map：{(1, 2), (2, 4), (3, 6), (4, 8)}
 
 </code></pre>
             </div>
