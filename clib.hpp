@@ -3,7 +3,7 @@
 /**************************************************
 |=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=|
 |-  Author: Zhao Mengfu                          -|
-|=  Version: 2.3-23.1112(d)                      =|
+|=  Version: 2.3-23.1112(e)                      =|
 |-  Compiler: Microsoft Visual C++ 2022 v17.7.6  -|
 |=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=|
 **************************************************/
@@ -266,6 +266,9 @@ _EXPORT_CLIB template <_CP_UTILITY _Matrix_Type _Cont>
 template <typename _Cont> // *** Unsafe ***
 #endif // _HAS_CXX20
 _NODISCARD constexpr long double determinant(const _Cont& _Matrix) {
+#if !_HAS_CXX20
+    if (!_CP_UTILITY _Has_Iterator<_Cont>::value || !_CP_UTILITY _Has_Iterator<decltype(_Matrix.front())>::value) { throw _STD runtime_error("Not a matrix."); }
+#endif // !_HAS_CXX20
     using value_type = typename _Cont::value_type;
     if (_Matrix.size() != _Matrix[0].size()) { throw _STD runtime_error("Matrix must be square (number of rows must be equal to the number of columns)."); }
     switch (_Matrix.size()) {
@@ -296,6 +299,9 @@ _EXPORT_CLIB template <_CP_UTILITY _Matrix_Type _Cont>
 template <typename _Cont> // *** Unsafe ***
 #endif // _HAS_CXX20
 _NODISCARD constexpr _Cont transpose(const _Cont& _Matrix) {
+#if !_HAS_CXX20
+    if (!_CP_UTILITY _Has_Iterator<_Cont>::value || !_CP_UTILITY _Has_Iterator<decltype(_Matrix.front())>::value) { throw _STD runtime_error("Not a matrix."); }
+#endif // !_HAS_CXX20
     if (_Matrix.empty() || _Matrix.front().empty()) { throw _STD runtime_error("Cannot transpose an empty matrix"); }
     _Cont _Rst(_Matrix.front().size(), typename _Cont::value_type(_Matrix.size()));
     for (size_t __row{}; __row < _Matrix.size(); ++__row) {
@@ -312,6 +318,12 @@ _EXPORT_CLIB template <_CP_UTILITY _Matrix_Type _Cont1, _CP_UTILITY _Matrix_Type
 template <typename _Cont1, typename _Cont2> // *** Unsafe ***
 #endif // _HAS_CXX20
 _NODISCARD constexpr _Cont1 multiplication_mm(const _Cont1& _Left, const _Cont2& _Right) {
+#if !_HAS_CXX20
+    if (!_CP_UTILITY _Has_Iterator<_Cont1>::value || !_CP_UTILITY _Has_Iterator<decltype(_Left.front())>::value ||
+        !_CP_UTILITY _Has_Iterator<_Cont2>::value || !_CP_UTILITY _Has_Iterator<decltype(_Right.front())>::value) {
+        throw _STD runtime_error("Not a matrix.");
+    }
+#endif // !_HAS_CXX20
     if (_Left.front().size() != _Right.size() || _Left.size() != _Right.front().size()) { throw std::invalid_argument("Matrix dimensions are not compatible for multiplication"); }
     _Cont1 _Rst(_Left.size(), typename _Cont1::value_type(_Right.front().size()));
     for (std::size_t __row_r{}; __row_r < _Left.size(); ++__row_r) {
@@ -330,6 +342,9 @@ _EXPORT_CLIB template <_CP_UTILITY _Matrix_Type _Cont>
 template <typename _Cont> // *** Unsafe ***
 #endif // _HAS_CXX20
 _NODISCARD constexpr _Cont multiplication_mn(const _Cont& _Left, long double _Right) {
+#if !_HAS_CXX20
+    if (!_CP_UTILITY _Has_Iterator<_Cont>::value || !_CP_UTILITY _Has_Iterator<decltype(_Left.front())>::value) { throw _STD runtime_error("Not a matrix."); }
+#endif // !_HAS_CXX20
     _Cont _Rst(_Left);
     for (auto& __row : _Rst) {
         for (auto& __col : __row) {
@@ -345,6 +360,9 @@ _EXPORT_CLIB template <_CP_UTILITY _Matrix_Type _Cont>
 template <typename _Cont> // *** Unsafe ***
 #endif // _HAS_CXX20
 _NODISCARD constexpr _Cont multiplication_nm(long double _Left, const _Cont& _Right) {
+#if !_HAS_CXX20
+    if (!_CP_UTILITY _Has_Iterator<_Cont>::value || !_CP_UTILITY _Has_Iterator<decltype(_Right.front())>::value) { throw _STD runtime_error("Not a matrix."); }
+#endif // !_HAS_CXX20
     return multiplication_mn(_Right, _Left);
 }
 
@@ -352,7 +370,7 @@ _NODISCARD constexpr _Cont multiplication_nm(long double _Left, const _Cont& _Ri
 _EXPORT_CLIB template <_CP_UTILITY _Matrix_Type _Cont>
 _NORETURN void print_matrix(const _Cont& _Matrix, size_t _Precision = 5) {
 #else
-template <typename _Cont>
+template <typename _Cont> // *** Unsafe ***
 _NORETURN void print_matrix(const _Cont& _Matrix) {
 #endif // _HAS_CXX20
     size_t _size{};
@@ -429,6 +447,12 @@ _EXPORT_CLIB template <_CP_UTILITY _Matrix_Type _Cont1, _CP_UTILITY _Matrix_Type
 template <typename _Cont1, typename _Cont2> // *** Unsafe ***
 #endif // _HAS_CXX20
 _NODISCARD constexpr _Cont1 operator+(const _Cont1& _Left, const _Cont2& _Right) {
+#if !_HAS_CXX20
+    if (!_CP_UTILITY _Has_Iterator<_Cont1>::value || !_CP_UTILITY _Has_Iterator<decltype(_Left.front())>::value ||
+        !_CP_UTILITY _Has_Iterator<_Cont2>::value || !_CP_UTILITY _Has_Iterator<decltype(_Right.front())>::value) {
+        throw _STD runtime_error("Not a matrix.");
+    }
+#endif // !_HAS_CXX20
     if (_Left.size() != _Right.size() || _Left[0].size() != _Right[0].size()) { throw _STD runtime_error("Matrix dimensions are not compatible for addition"); }
     _Cont1 _Rst(_Left);
     for (size_t __row{}; __row < _Rst.size(); ++__row) {
@@ -444,6 +468,12 @@ _EXPORT_CLIB template <_CP_UTILITY _Matrix_Type _Cont1, _CP_UTILITY _Matrix_Type
 template <typename _Cont1, typename _Cont2> // *** Unsafe ***
 #endif // _HAS_CXX20
 _NODISCARD constexpr _Cont1 operator-(const _Cont1& _Left, const _Cont2& _Right) {
+#if !_HAS_CXX20
+    if (!_CP_UTILITY _Has_Iterator<_Cont1>::value || !_CP_UTILITY _Has_Iterator<decltype(_Left.front())>::value ||
+        !_CP_UTILITY _Has_Iterator<_Cont2>::value || !_CP_UTILITY _Has_Iterator<decltype(_Right.front())>::value) {
+        throw _STD runtime_error("Not a matrix.");
+    }
+#endif // !_HAS_CXX20
     if (_Left.size() != _Right.size() || _Left[0].size() != _Right[0].size()) { throw _STD runtime_error("Matrix dimensions are not compatible for subtraction"); }
     _Cont1 _Rst(_Left);
     for (size_t __row{}; __row < _Rst.size(); ++__row) {
