@@ -3,7 +3,7 @@
 /**************************************************
 |=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=|
 |-  Author: Zhao Mengfu                          -|
-|=  Version: 2.4-23.1113(b)                      =|
+|=  Version: 2.4-23.1114(a)                      =|
 |-  Compiler: Microsoft Visual C++ 2022 v17.7.6  -|
 |=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=|
 **************************************************/
@@ -13,7 +13,7 @@
 #define _CLIB_HPP_
 
 #include <yvals_core.h>
-#define _EXPORT_CLIB_STD             _EXPORT_STD
+#define _EXPORT_CLIB_STD                _EXPORT_STD
 #include <algorithm>
 #include <cstdint>
 #include <sstream>
@@ -21,52 +21,52 @@
 #include <string>
 #include <type_traits>
 #ifndef _STD
-#define _STD                         ::std::
+#define _STD                            ::std::
 #endif // _STD
 #ifndef _STD_BEGIN
-#define _STD_BEGIN                   namespace std {
+#define _STD_BEGIN                      namespace std {
 #endif // _STD_BEGIN
 #ifndef _STD_END
-#define _STD_END                     }
+#define _STD_END                        }
 #endif // _STD_END
-#define _CLIB_BEGIN                  namespace clib {
-#define _CLIB_END                    }
-#define _MATRIX_UTILITY_BEGIN        namespace matrix_utility {
-#define _MATRIX_UTILITY_END          }
+#define _CLIB_BEGIN                     namespace clib {
+#define _CLIB_END                       }
+#define _MATRIX_UTILITY_BEGIN           namespace matrix_utility {
+#define _MATRIX_UTILITY_END             }
 #if _HAS_CXX17
 #include <string_view>
-#define _CLIB_PRIVATE_UTILITY_BEGIN  namespace clib::private_utility {
-#define _CLIB_PRIVATE_UTILITY_END    }
-#define _CLIB_MATRIX_UTILITY_BEGIN   namespace clib::matrix_utility {
-#define _CLIB_MATRIX_UTILITY_END     }
-#define _NODISCARD                   [[nodiscard]]
+#define _CLIB_PRIVATE_UTILITY_BEGIN     namespace clib::private_utility {
+#define _CLIB_PRIVATE_UTILITY_END       }
+#define _CLIB_MATRIX_UTILITY_BEGIN      namespace clib::matrix_utility {
+#define _CLIB_MATRIX_UTILITY_END        }
+#define _NODISCARD                      [[nodiscard]]
 #else
-#define _CLIB_PRIVATE_UTILITY_BEGIN  namespace clib {                  \
-                                         namespace private_utility {
-#define _CLIB_PRIVATE_UTILITY_END        }                             \
-                                     }
-#define _CLIB_MATRIX_UTILITY_BEGIN   namespace clib {                  \
-                                         namespace matrix_utility {
-#define _CLIB_MATRIX_UTILITY_END         }                             \
-                                     }
+#define _CLIB_PRIVATE_UTILITY_BEGIN     namespace clib {                                              \
+                                            namespace private_utility {
+#define _CLIB_PRIVATE_UTILITY_END           }                                                         \
+                                        }
+#define _CLIB_MATRIX_UTILITY_BEGIN      namespace clib {                                              \
+                                            namespace matrix_utility {
+#define _CLIB_MATRIX_UTILITY_END            }                                                         \
+                                        }
 #ifndef _NODISCARD
 #define _NODISCARD
 #endif // _NODISCARD
 #endif // _HAS_CXX17
-#define _CP_UTILITY                  clib::private_utility::
+#define _CP_UTILITY                     clib::private_utility::
 #ifndef _NORETURN
-#define _NORETURN                    [[noreturn]]
+#define _NORETURN                       [[noreturn]]
 #endif // _NORETURN
 #if _HAS_CXX20
 #include <concepts>
 #include <format>
 #include <ranges>
-#define _CHAIN_UTILITY_BEGIN         namespace clib::chain_utility {
-#define _CHAIN_UTILITY_END           }
+#define _CHAIN_UTILITY_BEGIN            namespace clib::chain_utility {
+#define _CHAIN_UTILITY_END              }
 #endif // _HAS_CXX20
 #if _HAS_CXX23 && defined(_BUILD_STD_MODULE)
-#define _EXPORT_CLIB                 export
-#define _EXPORT_CLIB_PRIVATE_UTILITY export
+#define _EXPORT_CLIB                    export
+#define _EXPORT_CLIB_PRIVATE_UTILITY    export
 #else
 #define _EXPORT_CLIB
 #define _EXPORT_CLIB_PRIVATE_UTILITY
@@ -264,9 +264,6 @@ _EXPORT_CLIB template <_CP_UTILITY _Matrix_Type _Cont>
 template <typename _Cont> // *** Unsafe ***
 #endif // _HAS_CXX20
 _NODISCARD constexpr long double determinant(const _Cont& _Matrix) {
-#if !_HAS_CXX20
-    if (!_CP_UTILITY _Has_Iterator<_Cont>::value || !_CP_UTILITY _Has_Iterator<decltype(_Matrix.front())>::value) { throw _STD runtime_error("Not a matrix."); }
-#endif // !_HAS_CXX20
     using value_type = typename _Cont::value_type;
     if (_Matrix.size() != _Matrix[0].size()) { throw _STD runtime_error("Matrix must be square (number of rows must be equal to the number of columns)."); }
     switch (_Matrix.size()) {
@@ -297,9 +294,6 @@ _EXPORT_CLIB template <_CP_UTILITY _Matrix_Type _Cont>
 template <typename _Cont> // *** Unsafe ***
 #endif // _HAS_CXX20
 _NODISCARD constexpr _Cont transpose(const _Cont& _Matrix) {
-#if !_HAS_CXX20
-    if (!_CP_UTILITY _Has_Iterator<_Cont>::value || !_CP_UTILITY _Has_Iterator<decltype(_Matrix.front())>::value) { throw _STD runtime_error("Not a matrix."); }
-#endif // !_HAS_CXX20
     if (_Matrix.empty() || _Matrix.front().empty()) { throw _STD runtime_error("Cannot transpose an empty matrix"); }
     _Cont _Rst(_Matrix.front().size(), typename _Cont::value_type(_Matrix.size()));
     for (size_t __row{}; __row < _Matrix.size(); ++__row) {
@@ -318,12 +312,6 @@ _NODISCARD constexpr _Cont1 operator*(const _Cont1& _Left, const _Cont2& _Right)
 template <typename _Cont1, typename _Cont2> // *** Unsafe ***
 _NODISCARD constexpr _Cont1 multi_mm(const _Cont1& _Left, const _Cont2& _Right) {
 #endif // _HAS_CXX20
-#if !_HAS_CXX20
-    if (!_CP_UTILITY _Has_Iterator<_Cont1>::value || !_CP_UTILITY _Has_Iterator<decltype(_Left.front())>::value ||
-        !_CP_UTILITY _Has_Iterator<_Cont2>::value || !_CP_UTILITY _Has_Iterator<decltype(_Right.front())>::value) {
-        throw _STD runtime_error("Not a matrix.");
-    }
-#endif // !_HAS_CXX20
     if (_Left.front().size() != _Right.size() || _Left.size() != _Right.front().size()) { throw std::invalid_argument("Matrix dimensions are not compatible for multiplication"); }
     _Cont1 _Rst(_Left.size(), typename _Cont1::value_type(_Right.front().size()));
     for (std::size_t __row_r{}; __row_r < _Left.size(); ++__row_r) {
@@ -343,15 +331,22 @@ _NODISCARD constexpr _Cont operator*(const _Cont& _Left, long double _Right) {
 template <typename _Cont> // *** Unsafe ***
 _NODISCARD constexpr _Cont multi_mn(const _Cont& _Left, long double _Right) {
 #endif // _HAS_CXX20
-#if !_HAS_CXX20
-    if (!_CP_UTILITY _Has_Iterator<_Cont>::value || !_CP_UTILITY _Has_Iterator<decltype(_Left.front())>::value) { throw _STD runtime_error("Not a matrix."); }
-#endif // !_HAS_CXX20
     _Cont _Rst(_Left);
+#if _HAS_CXX20
+    _STD ranges::for_each(_Rst, [_Right](auto& __row) {
+        _STD ranges::for_each(__row, [_Right](auto& __col) {
+#else
     for (auto& __row : _Rst) {
         for (auto& __col : __row) {
+#endif // _HAS_CXX20
             __col *= _Right;
+#if _HAS_CXX20
+        });
+    });
+#else
         }
     }
+#endif // _HAS_CXX20
     return _Rst;
 }
 
@@ -363,7 +358,6 @@ template <typename _Cont> // *** Unsafe ***
 _NODISCARD constexpr _Cont multi_nm(long double _Left, const _Cont& _Right) {
 #endif // _HAS_CXX20
 #if !_HAS_CXX20
-    if (!_CP_UTILITY _Has_Iterator<_Cont>::value || !_CP_UTILITY _Has_Iterator<decltype(_Right.front())>::value) { throw _STD runtime_error("Not a matrix."); }
     return multi_mn(_Right, _Left);
 #else
     return _Right * _Left;
@@ -449,12 +443,6 @@ _EXPORT_CLIB template <_CP_UTILITY _Matrix_Type _Cont1, _CP_UTILITY _Matrix_Type
 template <typename _Cont1, typename _Cont2> // *** Unsafe ***
 #endif // _HAS_CXX20
 _NODISCARD constexpr _Cont1 operator+(const _Cont1& _Left, const _Cont2& _Right) {
-#if !_HAS_CXX20
-    if (!_CP_UTILITY _Has_Iterator<_Cont1>::value || !_CP_UTILITY _Has_Iterator<decltype(_Left.front())>::value ||
-        !_CP_UTILITY _Has_Iterator<_Cont2>::value || !_CP_UTILITY _Has_Iterator<decltype(_Right.front())>::value) {
-        throw _STD runtime_error("Not a matrix.");
-    }
-#endif // !_HAS_CXX20
     if (_Left.size() != _Right.size() || _Left[0].size() != _Right[0].size()) { throw _STD runtime_error("Matrix dimensions are not compatible for addition"); }
     _Cont1 _Rst(_Left);
     for (size_t __row{}; __row < _Rst.size(); ++__row) {
@@ -470,12 +458,6 @@ _EXPORT_CLIB template <_CP_UTILITY _Matrix_Type _Cont1, _CP_UTILITY _Matrix_Type
 template <typename _Cont1, typename _Cont2> // *** Unsafe ***
 #endif // _HAS_CXX20
 _NODISCARD constexpr _Cont1 operator-(const _Cont1& _Left, const _Cont2& _Right) {
-#if !_HAS_CXX20
-    if (!_CP_UTILITY _Has_Iterator<_Cont1>::value || !_CP_UTILITY _Has_Iterator<decltype(_Left.front())>::value ||
-        !_CP_UTILITY _Has_Iterator<_Cont2>::value || !_CP_UTILITY _Has_Iterator<decltype(_Right.front())>::value) {
-        throw _STD runtime_error("Not a matrix.");
-    }
-#endif // !_HAS_CXX20
     if (_Left.size() != _Right.size() || _Left[0].size() != _Right[0].size()) { throw _STD runtime_error("Matrix dimensions are not compatible for subtraction"); }
     _Cont1 _Rst(_Left);
     for (size_t __row{}; __row < _Rst.size(); ++__row) {
