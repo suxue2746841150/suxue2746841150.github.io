@@ -368,7 +368,7 @@ _NODISCARD constexpr _Cont multiplication_nm(long double _Left, const _Cont& _Ri
 
 #if _HAS_CXX20
 _EXPORT_CLIB template <_CP_UTILITY _Matrix_Type _Cont>
-_NORETURN void print_matrix(const _Cont& _Matrix, size_t _Precision = 5) {
+_NORETURN void print_matrix(const _Cont& _Matrix, size_t _Precision = 6) {
 #else
 template <typename _Cont> // *** Unsafe ***
 _NORETURN void print_matrix(const _Cont& _Matrix) {
