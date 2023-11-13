@@ -3,7 +3,7 @@
 /**************************************************
 |=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=|
 |-  Author: Zhao Mengfu                          -|
-|=  Version: 2.4-23.1113(a)                      =|
+|=  Version: 2.4-23.1113(b)                      =|
 |-  Compiler: Microsoft Visual C++ 2022 v17.7.6  -|
 |=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=|
 **************************************************/
@@ -31,21 +31,23 @@
 #endif // _STD_END
 #define _CLIB_BEGIN                  namespace clib {
 #define _CLIB_END                    }
+#define _MATRIX_UTILITY_BEGIN        namespace matrix_utility {
+#define _MATRIX_UTILITY_END          }
 #if _HAS_CXX17
 #include <string_view>
 #define _CLIB_PRIVATE_UTILITY_BEGIN  namespace clib::private_utility {
 #define _CLIB_PRIVATE_UTILITY_END    }
-#define _MATRIX_UTILITY_BEGIN        namespace clib::matrix_utility {
-#define _MATRIX_UTILITY_END          }
+#define _CLIB_MATRIX_UTILITY_BEGIN   namespace clib::matrix_utility {
+#define _CLIB_MATRIX_UTILITY_END     }
 #define _NODISCARD                   [[nodiscard]]
 #else
 #define _CLIB_PRIVATE_UTILITY_BEGIN  namespace clib {                  \
                                          namespace private_utility {
 #define _CLIB_PRIVATE_UTILITY_END        }                             \
                                      }
-#define _MATRIX_UTILITY_BEGIN        namespace clib {                  \
+#define _CLIB_MATRIX_UTILITY_BEGIN   namespace clib {                  \
                                          namespace matrix_utility {
-#define _MATRIX_UTILITY_END              }                             \
+#define _CLIB_MATRIX_UTILITY_END         }                             \
                                      }
 #ifndef _NODISCARD
 #define _NODISCARD
@@ -309,11 +311,13 @@ _NODISCARD constexpr _Cont transpose(const _Cont& _Matrix) {
 }
 
 #if _HAS_CXX20
+_MATRIX_UTILITY_BEGIN
 _EXPORT_CLIB template <_CP_UTILITY _Matrix_Type _Cont1, _CP_UTILITY _Matrix_Type _Cont2>
+_NODISCARD constexpr _Cont1 operator*(const _Cont1& _Left, const _Cont2& _Right) {
 #else
 template <typename _Cont1, typename _Cont2> // *** Unsafe ***
+_NODISCARD constexpr _Cont1 multi_mm(const _Cont1& _Left, const _Cont2& _Right) {
 #endif // _HAS_CXX20
-_NODISCARD constexpr _Cont1 multiplication_mm(const _Cont1& _Left, const _Cont2& _Right) {
 #if !_HAS_CXX20
     if (!_CP_UTILITY _Has_Iterator<_Cont1>::value || !_CP_UTILITY _Has_Iterator<decltype(_Left.front())>::value ||
         !_CP_UTILITY _Has_Iterator<_Cont2>::value || !_CP_UTILITY _Has_Iterator<decltype(_Right.front())>::value) {
@@ -334,10 +338,11 @@ _NODISCARD constexpr _Cont1 multiplication_mm(const _Cont1& _Left, const _Cont2&
 
 #if _HAS_CXX20
 _EXPORT_CLIB template <_CP_UTILITY _Matrix_Type _Cont>
+_NODISCARD constexpr _Cont operator*(const _Cont& _Left, long double _Right) {
 #else
 template <typename _Cont> // *** Unsafe ***
+_NODISCARD constexpr _Cont multi_mn(const _Cont& _Left, long double _Right) {
 #endif // _HAS_CXX20
-_NODISCARD constexpr _Cont multiplication_mn(const _Cont& _Left, long double _Right) {
 #if !_HAS_CXX20
     if (!_CP_UTILITY _Has_Iterator<_Cont>::value || !_CP_UTILITY _Has_Iterator<decltype(_Left.front())>::value) { throw _STD runtime_error("Not a matrix."); }
 #endif // !_HAS_CXX20
@@ -352,14 +357,18 @@ _NODISCARD constexpr _Cont multiplication_mn(const _Cont& _Left, long double _Ri
 
 #if _HAS_CXX20
 _EXPORT_CLIB template <_CP_UTILITY _Matrix_Type _Cont>
+_NODISCARD constexpr _Cont operator*(long double _Left, const _Cont& _Right) {
 #else
 template <typename _Cont> // *** Unsafe ***
+_NODISCARD constexpr _Cont multi_nm(long double _Left, const _Cont& _Right) {
 #endif // _HAS_CXX20
-_NODISCARD constexpr _Cont multiplication_nm(long double _Left, const _Cont& _Right) {
 #if !_HAS_CXX20
     if (!_CP_UTILITY _Has_Iterator<_Cont>::value || !_CP_UTILITY _Has_Iterator<decltype(_Right.front())>::value) { throw _STD runtime_error("Not a matrix."); }
+    return multi_mn(_Right, _Left);
+#else
+    return _Right * _Left;
+_MATRIX_UTILITY_END
 #endif // !_HAS_CXX20
-    return multiplication_mn(_Right, _Left);
 }
 
 #if _HAS_CXX20
@@ -375,14 +384,16 @@ _NODISCARD _STD string matrix_view(const _Cont& _Matrix) {
     _STD ranges::for_each(_Matrix, [&_size, _Precision](const auto& __iter) {
         _STD ranges::for_each(__iter, [&_size, _Precision](const auto& __it) {
             _STD string _temp{ _STD format("{0:.{1}f}", static_cast<long double>(__it), _Precision) };
-            if (_size < _temp.size()) { _size = _temp.size(); }
-        });
-    });
 #else
     for (const auto& __iter : _Matrix) {
         for (const auto& __it : __iter) {
             _STD string _temp{ _STD to_string(__it) };
+#endif // _HAS_CXX20
             if (_size < _temp.size()) { _size = _temp.size(); }
+#if _HAS_CXX20
+        });
+    });
+#else
         }
     }
 #endif // _HAS_CXX20
@@ -431,7 +442,7 @@ _NODISCARD _STD string matrix_view(const _Cont& _Matrix) {
 }
 _CLIB_END
 
-_MATRIX_UTILITY_BEGIN
+_CLIB_MATRIX_UTILITY_BEGIN
 #if _HAS_CXX20
 _EXPORT_CLIB template <_CP_UTILITY _Matrix_Type _Cont1, _CP_UTILITY _Matrix_Type _Cont2>
 #else
@@ -474,23 +485,7 @@ _NODISCARD constexpr _Cont1 operator-(const _Cont1& _Left, const _Cont2& _Right)
     }
     return _Rst;
 }
-#if _HAS_CXX20
-_EXPORT_CLIB template <_CP_UTILITY _Matrix_Type _Cont1, _CP_UTILITY _Matrix_Type _Cont2>
-_NODISCARD constexpr _Cont1 operator*(const _Cont1& _Left, const _Cont2& _Right) {
-    return multiplication_mm(_Left, _Right);
-}
-
-_EXPORT_CLIB template <_CP_UTILITY _Matrix_Type _Cont>
-_NODISCARD constexpr _Cont operator*(const _Cont& _Left, long double _Right) {
-    return multiplication_mn(_Left, _Right);
-}
-
-_EXPORT_CLIB template <_CP_UTILITY _Matrix_Type _Cont>
-_NODISCARD constexpr _Cont operator*(long double _Left, const _Cont& _Right) {
-    return multiplication_mn(_Right, _Left);
-}
-#endif // _HAS_CXX20
-_MATRIX_UTILITY_END
+_CLIB_MATRIX_UTILITY_END
 
 #undef _EXPORT_CLIB
 #undef _EXPORT_CLIB_STD
@@ -502,6 +497,8 @@ _MATRIX_UTILITY_END
 #undef _CP_UTILITY
 #undef _MATRIX_UTILITY_BEGIN
 #undef _MATRIX_UTILITY_END
+#undef _CLIB_MATRIX_UTILITY_BEGIN
+#undef _CLIB_MATRIX_UTILITY_END
 #if _HAS_CXX20
 #undef _CHAIN_UTILITY_BEGIN
 #undef _CHAIN_UTILITY_END
