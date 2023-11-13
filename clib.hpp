@@ -3,7 +3,7 @@
 /**************************************************
 |=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=|
 |-  Author: Zhao Mengfu                          -|
-|=  Version: 2.3-23.1112(e)                      =|
+|=  Version: 2.4-23.1113(a)                      =|
 |-  Compiler: Microsoft Visual C++ 2022 v17.7.6  -|
 |=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=|
 **************************************************/
@@ -16,7 +16,6 @@
 #define _EXPORT_CLIB_STD             _EXPORT_STD
 #include <algorithm>
 #include <cstdint>
-#include <iostream>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -63,9 +62,6 @@
 #define _CHAIN_UTILITY_BEGIN         namespace clib::chain_utility {
 #define _CHAIN_UTILITY_END           }
 #endif // _HAS_CXX20
-#if _HAS_CXX23
-#include <print>
-#endif // _HAS_CXX23
 #if _HAS_CXX23 && defined(_BUILD_STD_MODULE)
 #define _EXPORT_CLIB                 export
 #define _EXPORT_CLIB_PRIVATE_UTILITY export
@@ -368,11 +364,12 @@ _NODISCARD constexpr _Cont multiplication_nm(long double _Left, const _Cont& _Ri
 
 #if _HAS_CXX20
 _EXPORT_CLIB template <_CP_UTILITY _Matrix_Type _Cont>
-_NORETURN void print_matrix(const _Cont& _Matrix, size_t _Precision = 6) {
+_NODISCARD _STD string matrix_view(const _Cont& _Matrix, size_t _Precision = 6) {
 #else
 template <typename _Cont> // *** Unsafe ***
-_NORETURN void print_matrix(const _Cont& _Matrix) {
+_NODISCARD _STD string matrix_view(const _Cont& _Matrix) {
 #endif // _HAS_CXX20
+    _STD stringstream _Rst;
     size_t _size{};
 #if _HAS_CXX20
     _STD ranges::for_each(_Matrix, [&_size, _Precision](const auto& __iter) {
@@ -391,52 +388,46 @@ _NORETURN void print_matrix(const _Cont& _Matrix) {
 #endif // _HAS_CXX20
     _size += 2;
 #if _HAS_CXX20
-    _STD ranges::for_each(_Matrix, [_size, _Precision](const auto& __ele) {
+    _STD ranges::for_each(_Matrix, [_size, _Precision, &_Rst](const auto& __ele) {
 #else
     for (const auto& __row : _Matrix) {
 #endif // _HAS_CXX20
-        _STD cout << '|';
+        _Rst << "|";
         bool _Flag{ true };
 #if _HAS_CXX20
-        _STD ranges::for_each(__ele, [_size, _Precision, &_Flag](const auto& __e) {
+        _STD ranges::for_each(__ele, [_size, _Precision, &_Flag, &_Rst](const auto& __e) {
 #else
         for (const auto& __ele : __row) {
 #endif // _HAS_CXX20
-#if _HAS_CXX23
+#if _HAS_CXX20
             if (_Flag) {
                 _Flag = false;
-                _STD print("{0:>{1}.{2}f}", static_cast<long double>(__e), _size - 2, _Precision);
+                _Rst << _STD format("{0:>{1}.{2}f}", static_cast<long double>(__e), _size - 2, _Precision);
             } else {
-                _STD print("{0:>{1}.{2}f}", static_cast<long double>(__e), _size, _Precision);
+                _Rst << _STD format("{0:>{1}.{2}f}", static_cast<long double>(__e), _size, _Precision);
             }
-#elif _HAS_CXX20
-            if (_Flag) {
-                _Flag = false;
-                _STD cout << _STD format("{0:>{1}.{2}f}", static_cast<long double>(__e), _size - 2, _Precision);
-            } else {
-                _STD cout << _STD format("{0:>{1}.{2}f}", static_cast<long double>(__e), _size, _Precision);
-            }
-#else // !_HAS_CXX20
+#else
             _STD string __number{ _STD to_string(__ele) };
             size_t __space{ _size - __number.size() };
             if (_Flag) {
                 _Flag = false;
                 __space -= 2;
             }
-            for (size_t _sp{}; _sp < __space; ++_sp) { _STD cout << ' '; }
-            _STD cout << __number;
-#endif // _HAS_CXX23
+            for (size_t _sp{}; _sp < __space; ++_sp) { _Rst << " "; }
+            _Rst << __number;
+#endif // _HAS_CXX20
 #if _HAS_CXX20
         });
 #else
         }
 #endif // _HAS_CXX20
-        _STD cout << '|' << _STD endl;
+        _Rst << "|\n";
 #if _HAS_CXX20
     });
 #else
     }
 #endif // _HAS_CXX20
+    return _Rst.str();
 }
 _CLIB_END
 
