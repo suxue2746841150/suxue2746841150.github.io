@@ -61,10 +61,13 @@
         <h1 style="text-align: center">clib使用文档</h1>
         <h1 style="text-align: center; font-size: medium; color: dimgrey">（msvc扩展库，仅对msvc上的表现与行为负责）</h1>
         <h2 style="font-family: 楷体; font-size: 1.8em"><b>作者：赵梦府</b></h2>
-        <i style="color: dimgray">当前版本：2.4-23.1114(a)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Download：&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://1drv.ms/u/s!Atyc1DQ8YkHngj7WrarVw9G3em1S?e=FQ7HXj" target="_blank">查看clib.hpp</a>（来源：OneDrive）&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://clib.download.awiki.org" target="_blank">下载zip</a>（来源：GitHub）</i><br />
-        <i style="color: orangered">(当文档版本与代码版本不一致时，以OneDrive内的代码版本为准)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: indianred">本库最低适配C++14标准，示例代码采用C++23标准</span></i>
+        <i style="color: dimgray">当前版本：2.4-23.1114(d)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Download：&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://1drv.ms/u/s!Atyc1DQ8YkHngj7WrarVw9G3em1S?e=FQ7HXj" target="_blank">查看clib.hpp</a>（来源：OneDrive）&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://clib.download.awiki.org" target="_blank">下载zip</a>（来源：GitHub）</i><br />
+        <i style="color: orangered">（当文档版本与代码版本不一致时，以OneDrive内的代码版本为准）&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: indianred">本库最低适配C++14标准，示例代码采用C++23标准</span></i><br />
+        <i style="color: dodgerblue">全局命名空间宏定义（位于源代码第15行）：</i><br />
+        <span style="color: gray">#define</span> <span style="color: darkviolet">_DEFINE_LIBRARY_NAMESPACE</span> clib<br />
+        <i style="color: dodgerblue">（当名称空间发生冲突时可选择修改该宏定义解决）</i>
         <hr />
-        <h3>一、formatter特化<span style="color:darkmagenta; font-size: 0.85em">（C++20）</span></h3>
+        <h3>一、formatter特化<span style="color: darkmagenta; font-size: 0.85em">（C++20）</span></h3>
         <p>
             对于标准库中实现了<i><a href="https://zh.cppreference.com/w/cpp/named_req/ForwardIterator" target="_blank" style="color: firebrick">老式向前迭代器(LegacyForwardIterator)</a></i> 的序列容器及元组类，本库为其提供基础格式化规则（继承自formatter&lt;string_view&gt;），方便输出复杂的嵌套容器（自定义格式说明与string_view相同，若需要更加个性化的格式化规则，可自行修改源码逻辑）<br />
             <h4><i style="color: lightslategrey">已支持的标准库容器：</i></h4>
@@ -165,13 +168,12 @@ map：{(1, 2), (2, 4), (3, 6), (4, 8)}
             &nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue">concept</span> <span style="color: darkturquoise">MatrixType</span> = <span style="color: blue">requires</span> (<span style="color: darkturquoise">ContainerType</span> <span style="color: cornflowerblue">matrix</span>) {<br />
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue">requires</span> std::ranges::<span style="color: darkturquoise">sized_range</span>&lt;<span style="color: darkturquoise">ContainerType</span>&gt;;<br />
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ <span style="color: cornflowerblue">matrix</span>.<span style="color: brown">size</span>() } -&gt; std::<span style="color: darkturquoise">same_as</span>&lt;<span style="color: darkturquoise">size_t</span>&gt;;<br />
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue">requires</span> <span style="color: blue">requires</span> (<span style="color: darkturquoise">size_t</span> <span style="color: cornflowerblue">row</span>) {<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue">requires</span> <span style="color: blue">requires</span> (<span style="color: darkturquoise">size_t</span> <span style="color: cornflowerblue">row</span>, <span style="color: darkturquoise">size_t</span> <span style="color: cornflowerblue">column</span>) {<br />
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue">requires</span> std::ranges::<span style="color: darkturquoise">sized_range</span>&lt;<span style="color: blue">decltype</span>(<span style="color: cornflowerblue">matrix</span>[<span style="color: cornflowerblue">row</span>])&gt;;<br />
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ <span style="color: cornflowerblue">matrix</span>[<span style="color: cornflowerblue">row</span>].<span style="color: brown">size</span>() } -&gt; std::<span style="color: darkturquoise">same_as</span>&lt;<span style="color: darkturquoise">size_t</span>&gt;;<br />
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: cornflowerblue">matrix</span>[<span style="color: cornflowerblue">row</span>].<span style="color: brown">size</span>() == <span style="color: cornflowerblue">matrix</span>.<span style="color: brown">front</span>().<span style="color: brown">size</span>();<br />
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue">requires</span> <span style="color: blue">requires</span> (<span style="color: darkturquoise">size_t</span> <span style="color: cornflowerblue">column</span>) {<br />
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ <span style="color: cornflowerblue">matrix</span>[<span style="color: cornflowerblue">row</span>][<span style="color: cornflowerblue">column</span>] } -&gt; std::<span style="color: darkturquoise">convertible_to</span>&lt;<span style="color: blue">long double</span>&gt;;<br />
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;};<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;std::<span style="color: darkturquoise">is_arithmetic_v</span>&lt;<span style="color: blue">decltype</span>(<span style="color: cornflowerblue">matrix</span>[<span style="color: cornflowerblue">row</span>][<span style="color: cornflowerblue">column</span>])&gt;;<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ <span style="color: cornflowerblue">matrix</span>[<span style="color: cornflowerblue">row</span>][<span style="color: cornflowerblue">column</span>] } -&gt; std::<span style="color: darkturquoise">convertible_to</span>&lt;<span style="color: blue">long double</span>&gt;;<br />
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;};<br />
             &nbsp;&nbsp;&nbsp;&nbsp;};<br />
             <h4><i style="color: lightslategrey">已支持的运算：</i></h4>
@@ -243,13 +245,13 @@ map：{(1, 2), (2, 4), (3, 6), (4, 8)}
     };
     <span style="color: blue">using</span> <span style="color: blue">namespace</span> clib::matrix_utility;
     <span style="color: blue">auto</span> <span style="color: cornflowerblue">determinant</span> = <span style="color: cornflowerblue">vd</span> * <span style="color: cornflowerblue">dd</span>;
-    std::<span style="color: brown">print</span>(
-        <span style="color: crimson">"vd:<span style="color: mediumpurple">\n</span>{}<span style="color: mediumpurple">\n</span>"
-        "determinant:<span style="color: mediumpurple">\n</span>{}<span style="color: mediumpurple">\n</span>"
-        "determinant = {:.2f}<span style="color: mediumpurple">\n</span><span style="color: mediumpurple">\n</span>"
-        "transpose(vd):<span style="color: mediumpurple">\n</span>{}<span style="color: mediumpurple">\n</span>"
-        "dd + dd:<span style="color: mediumpurple">\n</span>{}<span style="color: mediumpurple">\n</span>"
-        "dd * vd:<span style="color: mediumpurple">\n</span>{}<span style="color: mediumpurple">\n</span>"
+    std::<span style="color: brown">println</span>(
+        <span style="color: crimson">"vd:<span style="color: mediumpurple">\n</span>{}<span style="color: mediumpurple">\n\n</span>"
+        "determinant:<span style="color: mediumpurple">\n</span>{}<span style="color: mediumpurple">\n\n</span>"
+        "determinant = {:.2f}<span style="color: mediumpurple">\n\n</span>"
+        "transpose(vd):<span style="color: mediumpurple">\n</span>{}<span style="color: mediumpurple">\n\n</span>"
+        "dd + dd:<span style="color: mediumpurple">\n</span>{}<span style="color: mediumpurple">\n\n</span>"
+        "dd * vd:<span style="color: mediumpurple">\n</span>{}<span style="color: mediumpurple">\n\n</span>"
         "2 * vd:<span style="color: mediumpurple">\n</span>{}"</span>,
         clib::<span style="color: brown">matrix_view</span>(<span style="color: cornflowerblue">vd</span>, 0),
         clib::<span style="color: brown">matrix_view</span>(<span style="color: cornflowerblue">determinant</span>, 1),
