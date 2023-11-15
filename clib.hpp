@@ -1,21 +1,20 @@
 // clib personal header
-// Reference: http://clib.awiki.org/
 
-/**************************************************
-|=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=|
-|-  Author: Zhao Mengfu                          -|
-|=  Version: 2.4-23.1114(d)                      =|
-|-  Compiler: Microsoft Visual C++ 2022 v17.7.6  -|
-|=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=|
-**************************************************/
+// Library reference: http://clib.awiki.org/
+// This code library has only been tested for compilation on MSVC.
+
+/**********************************
+|=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=|
+|-=   Author: Zhao Mengfu       =-|
+|=-   Version: 2.4-23.1115(d)   -=|
+|-=   Compiler: MSVC 19.37      =-|
+|=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=|
+**********************************/
 
 #pragma once
 #ifndef _CLIB_HPP_
 #define _CLIB_HPP_
-#define _DEFINE_LIBRARY_NAMESPACE       clib
-
-#include <yvals_core.h>
-#define _EXPORT_CLIB_STD                _EXPORT_STD
+#define _DEFINE_LIBRARY_NAMESPACE       clib       /* Global Namespace */
 #include <algorithm>
 #include <cstdint>
 #include <sstream>
@@ -63,6 +62,9 @@
 #include <concepts>
 #include <format>
 #include <ranges>
+#define _CLIB_CONCEPTS_BEGIN            namespace concepts {
+#define _CLIB_CONCEPTS_END              }
+#define _CP_CONCEPTS                    _CP_UTILITY concepts::
 #define _CHAIN_UTILITY_BEGIN            namespace _DEFINE_LIBRARY_NAMESPACE::chain_utility {
 #define _CHAIN_UTILITY_END              }
 #endif // _HAS_CXX20
@@ -73,6 +75,11 @@
 #define _EXPORT_CLIB
 #define _EXPORT_CLIB_PRIVATE_UTILITY
 #endif // _HAS_CXX23 && defined(_BUILD_STD_MODULE)
+#if defined(_EXPORT_STD)
+#define _EXPORT_CLIB_STD                _EXPORT_STD
+#else
+#define _EXPORT_CLIB_STD                export
+#endif // defined(_EXPORT_STD)
 
 _STD_BEGIN
 // Forward declaration for specialized formatter template
@@ -102,34 +109,11 @@ _STD_END
 
 _CLIB_PRIVATE_UTILITY_BEGIN
 #if _HAS_CXX20
+_CLIB_CONCEPTS_BEGIN
 _EXPORT_CLIB_PRIVATE_UTILITY template <typename _Type>
-concept _Iterable_Type = requires (_Type __val) {
-    requires requires {
-        { __val.begin() } -> _STD same_as<typename _Type::iterator>;
-        { __val.end() } -> _STD same_as<typename _Type::iterator>;
-    } || requires {
-        { __val.cbegin() } -> _STD same_as<typename _Type::const_iterator>;
-        { __val.cend() } -> _STD same_as<typename _Type::const_iterator>;
-    };
-};
-
-_EXPORT_CLIB_PRIVATE_UTILITY template <typename _Cont>
-concept _Seque_Cont = (
-    _STD same_as<_Cont, _STD vector<typename _Cont::value_type, typename _Cont::allocator_type>>       ||
-    _STD same_as<_Cont, _STD deque<typename _Cont::value_type, typename _Cont::allocator_type>>        ||
-    _STD same_as<_Cont, _STD forward_list<typename _Cont::value_type, typename _Cont::allocator_type>> ||
-    _STD same_as<_Cont, _STD list<typename _Cont::value_type, typename _Cont::allocator_type>>
-);
-
-_EXPORT_CLIB_PRIVATE_UTILITY template <typename _Assoc>
-concept _Assoc_Cont = requires (_Assoc __cont) {
-    requires requires {
-        { __cont.key_comp() } -> _STD same_as<typename _Assoc::key_compare>;
-        { __cont.value_comp() } -> _STD same_as<typename _Assoc::value_compare>;
-    } || requires {
-        { __cont.key_eq() } -> _STD same_as<typename _Assoc::key_equal>;
-        { __cont.hash_function() } -> _STD same_as<typename _Assoc::hasher>;
-    };
+concept _Foreachable_Type = requires (_Type __val) {
+    { __val.begin() } -> _STD same_as<typename _Type::iterator>;
+    { __val.end() } -> _STD same_as<typename _Type::iterator>;
 };
 
 _EXPORT_CLIB_PRIVATE_UTILITY template <typename _Cont>
@@ -144,14 +128,24 @@ concept _Matrix_Type = requires (_Cont __matrix) {
         { __matrix[__row][__col] } -> _STD convertible_to<long double>;
     };
 };
-#endif // _HAS_CXX20
-template <typename> struct _Has_Iterator; // Deprecated
-#if _HAS_CXX20
+_CLIB_CONCEPTS_END
+
 _EXPORT_CLIB_PRIVATE_UTILITY template <typename _Iter>
-_NODISCARD constexpr _STD string _format_container(_Iter, _Iter) noexcept;
+_NODISCARD constexpr _STD string _format_container(_Iter _Beg, _Iter _End) noexcept {
+    _STD stringstream _Rst;
+    while (_Beg != _End) {
+        _Rst << _STD format("{}", *_Beg++);
+        if (_Beg != _End) { _Rst << ", "; }
+    }
+    return _Rst.str();
+}
 
 _EXPORT_CLIB_PRIVATE_UTILITY template<typename _Tp, size_t... _Args>
-_NODISCARD constexpr _STD string _format_tuple(const _Tp& __t, _STD index_sequence<_Args...>) noexcept;
+_NODISCARD constexpr _STD string _format_tuple(const _Tp& __t, _STD index_sequence<_Args...>) noexcept {
+    _STD stringstream _Rst;
+    ((_Rst << (_Args ? ", " : "") << _STD format("{}", _STD get<_Args>(__t))), ...);
+    return _Rst.str();
+}
 #endif // _HAS_CXX20
 _CLIB_PRIVATE_UTILITY_END // namespace private_utility
 
@@ -166,14 +160,6 @@ struct formatter<array<_Ty, _Size>> : formatter<string_view> {
     }
 };
 
-_EXPORT_CLIB template <_CP_UTILITY _Seque_Cont _Seque>
-struct formatter<_Seque> : formatter<string_view> {
-    template <typename _Fmt_Cont>
-    constexpr auto format(const _Seque& __v, _Fmt_Cont& __ctx) const {
-        return formatter<string_view>::format(_STD format("[{}]", _CP_UTILITY _format_container(__v.begin(), __v.end())), __ctx);
-    }
-};
-
 _EXPORT_CLIB template <typename _Ty, size_t _Extent>
 struct formatter<span<_Ty, _Extent>> : formatter<string_view> {
     template <typename _Fmt_Cont>
@@ -182,7 +168,28 @@ struct formatter<span<_Ty, _Extent>> : formatter<string_view> {
     }
 };
 
-_EXPORT_CLIB template <_CP_UTILITY _Assoc_Cont _Assoc>
+_EXPORT_CLIB template <typename _Seque>
+    requires _STD same_as<_Seque, _STD vector<typename _Seque::value_type, typename _Seque::allocator_type>>
+          || _STD same_as<_Seque, _STD deque<typename _Seque::value_type, typename _Seque::allocator_type>>
+          || _STD same_as<_Seque, _STD forward_list<typename _Seque::value_type, typename _Seque::allocator_type>>
+          || _STD same_as<_Seque, _STD list<typename _Seque::value_type, typename _Seque::allocator_type>>
+struct formatter<_Seque> : formatter<string_view> {
+    template <typename _Fmt_Cont>
+    constexpr auto format(const _Seque& __v, _Fmt_Cont& __ctx) const {
+        return formatter<string_view>::format(_STD format("[{}]", _CP_UTILITY _format_container(__v.begin(), __v.end())), __ctx);
+    }
+};
+
+_EXPORT_CLIB template <typename _Assoc>
+    requires requires (_Assoc __cont) {
+        requires requires {
+            { __cont.key_comp() } -> _STD same_as<typename _Assoc::key_compare>;
+            { __cont.value_comp() } -> _STD same_as<typename _Assoc::value_compare>;
+        } || requires {
+            { __cont.key_eq() } -> _STD same_as<typename _Assoc::key_equal>;
+            { __cont.hash_function() } -> _STD same_as<typename _Assoc::hasher>;
+        };
+    }
 struct formatter<_Assoc> : formatter<string_view> {
     template <typename _Fmt_Cont>
     constexpr auto format(const _Assoc& __v, _Fmt_Cont& __ctx) const {
@@ -211,7 +218,7 @@ _STD_END
 #if _HAS_CXX20
 _CHAIN_UTILITY_BEGIN // ^^^ Unstable utility / Unsafe templates vvv
 // Immutable range operations
-_EXPORT_CLIB template <_CP_UTILITY _Iterable_Type _Cont, typename... _Args>
+_EXPORT_CLIB template <_CP_CONCEPTS _Foreachable_Type _Cont, typename... _Args>
     requires (_STD regular_invocable<_Args, typename _Cont::value_type&> && ...)
 _NODISCARD constexpr _Cont operator|(_Cont _Val, _Args&&... _Func) {
     _STD ranges::for_each(_Val, [&](auto&& _Ele) { (_Func(_Ele), ...); });
@@ -219,7 +226,7 @@ _NODISCARD constexpr _Cont operator|(_Cont _Val, _Args&&... _Func) {
 }
 
 // Mutable range operations
-_EXPORT_CLIB template <_CP_UTILITY _Iterable_Type _Cont, typename... _Args>
+_EXPORT_CLIB template <_CP_CONCEPTS _Foreachable_Type _Cont, typename... _Args>
     requires (_STD regular_invocable<_Args, typename _Cont::value_type&> && ...)
 constexpr _Cont& operator/(_Cont& _Val, _Args&&... _Func) {
     _STD ranges::for_each(_Val, [&](auto&& _Ele) { (_Func(_Ele), ...); });
@@ -230,38 +237,9 @@ _CHAIN_UTILITY_END
 #undef _CHAIN_UTILITY_END
 #endif // _HAS_CXX20
 
-_CLIB_PRIVATE_UTILITY_BEGIN
-#if _HAS_CXX20
-_EXPORT_CLIB_PRIVATE_UTILITY template <typename _Iter>
-_NODISCARD constexpr _STD string _format_container(_Iter _Beg, _Iter _End) noexcept {
-    _STD stringstream _Rst;
-    while (_Beg != _End) {
-        _Rst << _STD format("{}", *_Beg++);
-        if (_Beg != _End) { _Rst << ", "; }
-    }
-    return _Rst.str();
-}
-
-_EXPORT_CLIB_PRIVATE_UTILITY template<typename _Tp, size_t... _Args>
-_NODISCARD constexpr _STD string _format_tuple(const _Tp& __t, _STD index_sequence<_Args...>) noexcept {
-    _STD stringstream _Rst;
-    ((_Rst << (_Args ? ", " : "") << _STD format("{}", _STD get<_Args>(__t))), ...);
-    return _Rst.str();
-}
-#endif // _HAS_CXX20
-template <typename _Type> // Deprecated
-struct _Has_Iterator {
-    template <typename _Test_Type, typename = decltype(_STD declval<_Test_Type>().begin()), typename = decltype(_STD declval<_Test_Type>().end())>
-    static constexpr bool _Is_Iterable() { return true; }
-    template <typename>
-    static constexpr bool _Is_Iterable(...) { return false; }
-    static constexpr bool value = _Is_Iterable<_Type>();
-};
-_CLIB_PRIVATE_UTILITY_END // namespace private_utility
-
 _CLIB_BEGIN
 #if _HAS_CXX20
-_EXPORT_CLIB template <_CP_UTILITY _Matrix_Type _Cont>
+_EXPORT_CLIB template <_CP_CONCEPTS _Matrix_Type _Cont>
 #else
 template <typename _Cont> // *** Unsafe ***
 #endif // _HAS_CXX20
@@ -291,7 +269,7 @@ _NODISCARD constexpr long double determinant(const _Cont& _Matrix) {
 }
 
 #if _HAS_CXX20
-_EXPORT_CLIB template <_CP_UTILITY _Matrix_Type _Cont>
+_EXPORT_CLIB template <_CP_CONCEPTS _Matrix_Type _Cont>
 #else
 template <typename _Cont> // *** Unsafe ***
 #endif // _HAS_CXX20
@@ -308,7 +286,7 @@ _NODISCARD constexpr _Cont transpose(const _Cont& _Matrix) {
 
 #if _HAS_CXX20
 _MATRIX_UTILITY_BEGIN
-_EXPORT_CLIB template <_CP_UTILITY _Matrix_Type _Cont1, _CP_UTILITY _Matrix_Type _Cont2>
+_EXPORT_CLIB template <_CP_CONCEPTS _Matrix_Type _Cont1, _CP_CONCEPTS _Matrix_Type _Cont2>
 _NODISCARD constexpr _Cont1 operator*(const _Cont1& _Left, const _Cont2& _Right) {
 #else
 template <typename _Cont1, typename _Cont2> // *** Unsafe ***
@@ -327,7 +305,7 @@ _NODISCARD constexpr _Cont1 multi_mm(const _Cont1& _Left, const _Cont2& _Right) 
 }
 
 #if _HAS_CXX20
-_EXPORT_CLIB template <_CP_UTILITY _Matrix_Type _Cont>
+_EXPORT_CLIB template <_CP_CONCEPTS _Matrix_Type _Cont>
 _NODISCARD constexpr _Cont operator*(const _Cont& _Left, long double _Right) {
 #else
 template <typename _Cont> // *** Unsafe ***
@@ -353,7 +331,7 @@ _NODISCARD constexpr _Cont multi_mn(const _Cont& _Left, long double _Right) {
 }
 
 #if _HAS_CXX20
-_EXPORT_CLIB template <_CP_UTILITY _Matrix_Type _Cont>
+_EXPORT_CLIB template <_CP_CONCEPTS _Matrix_Type _Cont>
 _NODISCARD constexpr _Cont operator*(long double _Left, const _Cont& _Right) {
 #else
 template <typename _Cont> // *** Unsafe ***
@@ -368,7 +346,7 @@ _MATRIX_UTILITY_END
 }
 
 #if _HAS_CXX20
-_EXPORT_CLIB template <_CP_UTILITY _Matrix_Type _Cont>
+_EXPORT_CLIB template <_CP_CONCEPTS _Matrix_Type _Cont>
 _NODISCARD _STD string matrix_view(const _Cont& _Matrix, size_t _Precision = 6) {
 #else
 template <typename _Cont> // *** Unsafe ***
@@ -405,25 +383,20 @@ _NODISCARD _STD string matrix_view(const _Cont& _Matrix) {
         bool _Begin{ true };
 #if _HAS_CXX20
         _STD ranges::for_each(__ele, [_size, _Precision, &_Begin, &_Rst](const auto& __e) {
+            size_t __space{ _size };
 #else
         for (const auto& __ele : __row) {
-#endif // _HAS_CXX20
-#if _HAS_CXX20
-            if (_Begin) {
-                _Begin = false;
-                _Rst << _STD format("{0:>{1}.{2}f}", static_cast<long double>(__e), _size - 2, _Precision);
-            } else {
-                _Rst << _STD format("{0:>{1}.{2}f}", static_cast<long double>(__e), _size, _Precision);
-            }
-#else
             _STD string __number{ _STD to_string(__ele) };
             size_t __space{ _size - __number.size() };
+#endif // _HAS_CXX20
             if (_Begin) {
                 _Begin = false;
                 __space -= 2;
             }
-            for (size_t _sp{}; _sp < __space; ++_sp) { _Rst << " "; }
-            _Rst << __number;
+#if _HAS_CXX20
+            _Rst << _STD format("{0:>{1}.{2}f}", static_cast<long double>(__e), __space, _Precision);
+#else
+            _Rst << _STD string(__space, ' ') << __number;
 #endif // _HAS_CXX20
 #if _HAS_CXX20
         });
@@ -443,7 +416,7 @@ _CLIB_END
 
 _CLIB_MATRIX_UTILITY_BEGIN
 #if _HAS_CXX20
-_EXPORT_CLIB template <_CP_UTILITY _Matrix_Type _Cont1, _CP_UTILITY _Matrix_Type _Cont2>
+_EXPORT_CLIB template <_CP_CONCEPTS _Matrix_Type _Cont1, _CP_CONCEPTS _Matrix_Type _Cont2>
 #else
 template <typename _Cont1, typename _Cont2> // *** Unsafe ***
 #endif // _HAS_CXX20
@@ -458,7 +431,7 @@ _NODISCARD constexpr _Cont1 operator+(const _Cont1& _Left, const _Cont2& _Right)
     return _Rst;
 }
 #if _HAS_CXX20
-_EXPORT_CLIB template <_CP_UTILITY _Matrix_Type _Cont1, _CP_UTILITY _Matrix_Type _Cont2>
+_EXPORT_CLIB template <_CP_CONCEPTS _Matrix_Type _Cont1, _CP_CONCEPTS _Matrix_Type _Cont2>
 #else
 template <typename _Cont1, typename _Cont2> // *** Unsafe ***
 #endif // _HAS_CXX20
@@ -487,6 +460,8 @@ _CLIB_MATRIX_UTILITY_END
 #undef _CLIB_MATRIX_UTILITY_BEGIN
 #undef _CLIB_MATRIX_UTILITY_END
 #if _HAS_CXX20
+#undef _CLIB_CONCEPTS_BEGIN
+#undef _CLIB_CONCEPTS_END
 #undef _CHAIN_UTILITY_BEGIN
 #undef _CHAIN_UTILITY_END
 #endif // _HAS_CXX20
