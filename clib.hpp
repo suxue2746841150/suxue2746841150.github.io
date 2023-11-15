@@ -15,6 +15,27 @@
 #ifndef _CLIB_HPP_
 #define _CLIB_HPP_
 #define _DEFINE_LIBRARY_NAMESPACE       clib       /* Global Namespace */
+#ifndef _HAS_CXX17
+#if __cplusplus > 201402L
+#define _HAS_CXX17 1
+#else
+#define _HAS_CXX17 0
+#endif
+#endif // _HAS_CXX17
+#ifndef _HAS_CXX20
+#if _HAS_CXX17 && __cplusplus > 201703L
+#define _HAS_CXX20 1
+#else
+#define _HAS_CXX20 0
+#endif
+#endif // _HAS_CXX20
+#ifndef _HAS_CXX23
+#if _HAS_CXX20 && __cplusplus > 202002L
+#define _HAS_CXX23 1
+#else
+#define _HAS_CXX23 0
+#endif
+#endif // _HAS_CXX23
 #include <algorithm>
 #include <cstdint>
 #include <sstream>
