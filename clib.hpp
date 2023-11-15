@@ -78,7 +78,11 @@
 #if defined(_EXPORT_STD)
 #define _EXPORT_CLIB_STD                _EXPORT_STD
 #else
+#if _HAS_CXX23 && defined(_BUILD_STD_MODULE)
 #define _EXPORT_CLIB_STD                export
+#else
+#define _EXPORT_CLIB_STD
+#endif // _HAS_CXX23 && defined(_BUILD_STD_MODULE)
 #endif // defined(_EXPORT_STD)
 
 _STD_BEGIN
