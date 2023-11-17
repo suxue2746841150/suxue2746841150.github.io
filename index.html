@@ -3,71 +3,51 @@
 <head>
     <title>clib reference</title>
     <style>
-        body {
-            font-family: 微软雅黑;
-            background-color: antiquewhite;
-            zoom: 100%;
-            transition: zoom 0.2s;
-        }
-
-        pre {
-            margin: 0; /* 取消外边距 */
-            padding: 0; /* 取消内边距 */
-        }
-
-        code {
-            word-wrap: break-word;
-            white-space: pre-wrap;
-        }
-
-        .console {
-            word-wrap: break-word;
-        }
-
-        .container {
-            display: flex;
-            font-size: 15px;
-        }
-
-        .code-block {
-            flex: 7;
-            margin-left: 3%; /* 创建左侧间隔 */
-        }
-
-        .result-block {
-            flex: 6;
-            margin-right: 3%; /* 创建右侧间隔 */
-        }
-
-        .code-block, .result-block {
-            background-color: #f6f2f2;
-            border: 7px solid #dfcfb6;
-            padding: 10px;
-            min-width: 100px; /* 适当的最小宽度 */
-            padding-bottom: 0; /* 取消下方内边距 */
-        }
-
-        .spacer {
-            width: 1.5%; /* 设置间隔 */
-        }
-
-        .language-cpp {
-            font-family: Monaco;
-        }
+        body { font-family: 微软雅黑; background-color: antiquewhite; zoom: 100%; transition: zoom 0.2s; }
+        pre { margin: 0; padding: 0; }
+        code { word-wrap: break-word; white-space: pre-wrap; }
+        .console { word-wrap: break-word; }
+        .container { display: flex; font-size: 15px; }
+        .code-block { flex: 7; margin-left: 3%; }
+        .result-block { flex: 6; margin-right: 3%; }
+        .code-block, .result-block { background-color: #f6f2f2; border: 7px solid #dfcfb6; padding: 10px; min-width: 100px;  padding-bottom: 0; }
+        .spacer { width: 1.5%; }
+        .language-cpp { font-family: Monaco; }
     </style>
 </head>
 <body>
     <div style="width: fit-content; min-width: 1400px">
         <h1 style="text-align: center">clib使用文档</h1>
-        <h1 style="text-align: center; font-size: medium; color: dimgrey">（msvc扩展库，仅对msvc上的表现与行为负责）</h1>
+        <h1 style="text-align: center; font-size: medium; color: dimgrey">（msvc扩展库，以msvc上的表现与行为为准）</h1>
         <h2 style="font-family: 楷体; font-size: 1.8em"><b>作者：赵梦府</b></h2>
-        <i style="color: dimgray">当前版本：2.4-23.1115(d)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Download：&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://1drv.ms/u/s!Atyc1DQ8YkHngj7WrarVw9G3em1S?e=FQ7HXj" target="_blank">查看clib.hpp</a>（来源：OneDrive）&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://clib.download.awiki.org" target="_blank">下载zip</a>（来源：GitHub）</i><br />
-        <i style="color: orangered">（当文档版本与代码版本不一致时，以OneDrive内的代码版本为准）&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: indianred">本库最低适配C++14标准，示例代码采用C++23标准</span></i><br />
-        <i style="color: dodgerblue">全局命名空间宏定义（位于源代码第17行）：</i><br />
+        <i style="color: dimgray">当前版本：2.4-23.1117(a)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Download：&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://1drv.ms/u/s!Atyc1DQ8YkHngj7WrarVw9G3em1S?e=FQ7HXj" target="_blank">查看clib.hpp</a>（来源：OneDrive）&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://clib.download.awiki.org" target="_blank">下载zip</a>（来源：GitHub）</i><br />
+        <i style="color: orangered">（当文档版本与代码版本不一致时，以OneDrive内的代码版本为准）&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: indianred">本库最低适配C++20标准，示例代码采用C++23标准</span></i><br />
+        <i style="color: dodgerblue">全局命名空间宏定义（位于clib.hpp文件代码第16行）：</i><br />
         <span style="color: gray">#define</span> <span style="color: darkviolet">_DEFINE_LIBRARY_NAMESPACE</span> clib<br />
         <i style="color: dodgerblue">（当名称空间发生冲突时可选择修改该宏定义解决）</i>
         <hr />
-        <h3>一、formatter特化<span style="color: darkmagenta; font-size: 0.85em">（C++20）</span></h3>
+        <h3>前言（关于模块）</h3>
+        <p>
+            C++20标准提供了模块的语言特性，但本库并没有废弃原本的头文件包含形式，你依旧可以使用 #include "clib.hpp" 的形式使用该库，然而当你的编译环境能够支持你使用模块时，依然推荐使用导入模块的形式使用本库而不是简单地包含头文件，这在一定程度上保证了代码使用的安全性（因为库内的临时工具在不声明导出时对外是不可见的），当你想要将clib.hpp导出为模块进行使用时，你的ixx文件可以这样写：<br />
+            <div class="code-block" style="margin-right: 65%">
+                <span style="font-size: larger"><i>example.ixx：</i></span>
+<pre><code class="language-cpp">
+<span style="color: darkgreen">// 模块声明</span>
+<span style="color: blue">module</span>;
+<span style="color: darkgreen">// 模块构建声明</span>
+<span style="color: gray">#define</span> <span style="color: darkmagenta">_BUILD_CLIB_MODULE</span>
+<span style="color: darkgreen">// 定义导出模块名，如clib</span>
+<span style="color: blue">export module</span> clib;
+<span style="color: darkgreen">// 导入clib.hpp头文件</span>
+<span style="color: gray">#include</span> <span style="color: crimson">"clib.hpp"</span>
+<span style="color: darkgreen">// 取消宏声明（可选）</span>
+<span style="color: gray">#undef</span> <span style="color: darkmagenta">_BUILD_CLIB_MODULE</span>
+
+</code></pre>
+            </div>
+        </p>
+        <hr />
+        <h3>一、formatter特化</h3>
         <p>
             对于标准库中实现了<i><a href="https://zh.cppreference.com/w/cpp/named_req/ForwardIterator" target="_blank" style="color: firebrick">老式向前迭代器(LegacyForwardIterator)</a></i> 的序列容器及元组类，本库为其提供基础格式化规则（继承自formatter&lt;string_view&gt;），方便输出复杂的嵌套容器（自定义格式说明与string_view相同，若需要更加个性化的格式化规则，可自行修改源码逻辑）<br />
             <h4><i style="color: lightslategrey">已支持的标准库容器：</i></h4>
@@ -80,23 +60,24 @@
             <div class="code-block">
                 <span style="font-size: larger"><i>示例代码：</i></span>
 <pre><code class="language-cpp">
-<span style="color: gray">#include</span> <span style="color: crimson">&lt;print&gt;</span>
-<span style="color: gray">#include</span> <span style="color: crimson">"clib.hpp"</span>
-<span style="color: gray">#include</span> <span style="color: crimson">&lt;vector&gt;</span>
-<span style="color: gray">#include</span> <span style="color: crimson">&lt;forward_list&gt;</span>
-<span style="color: gray">#include</span> <span style="color: crimson">&lt;unordered_map&gt;</span>
-<span style="color: gray">#include</span> <span style="color: crimson">&lt;tuple&gt;</span>
-<span style="color: gray">#include</span> <span style="color: crimson">&lt;span&gt;</span>
+<span style="color: blue">import</span> clib;
+<span style="color: blue">import</span> std;
 
 <span style="color: blue">int</span> <span style="color: brown">main</span>() {
-    std::<span style="color: darkturquoise">vector</span>&lt;<span style="color: blue">int</span>&gt; <span style="color: cornflowerblue">vec</span>{ 1, 2, 3, 4, 5 };
-    <span style="color: blue">using</span> <span style="color: darkturquoise">fl_sv</span> = std::<span style="color: darkturquoise">forward_list</span>&lt;std::<span style="color: darkturquoise">string_view</span>&gt;;
-    <span style="color: blue">using</span> <span style="color: darkturquoise">t_fs_d</span> = std::<span style="color: darkturquoise">tuple</span>&lt;<span style="color: darkturquoise">fl_sv</span>, std::<span style="color: darkturquoise">string</span>, <span style="color: blue">double</span>&gt;;
-    <span style="color: blue">using</span> <span style="color: darkturquoise">um_i_pii</span> = std::<span style="color: darkturquoise">unordered_map</span>&lt;<span style="color: blue">int</span>, std::<span style="color: darkturquoise">pair</span>&lt;<span style="color: blue">int</span>, <span style="color: blue">int</span>&gt;&gt;;
-    std::<span style="color: brown">println</span>(<span style="color: crimson">"{}"</span>, <span style="color: cornflowerblue">vec</span>);
-    std::<span style="color: brown">println</span>(<span style="color: crimson">"{}"</span>, <span style="color: darkturquoise">t_fs_d</span>{ <span style="color: darkturquoise">fl_sv</span>{ <span style="color: crimson">"Hello"</span>, <span style="color: crimson">"World"</span> }, <span style="color: crimson">"！！！"</span>, 3.14 });
-    std::<span style="color: brown">println</span>(<span style="color: crimson">"{}"</span>, <span style="color: darkturquoise">um_i_pii</span>{ { 8, { 4, 5 } }, { 9, { 6, 7 } } });
-    std::<span style="color: brown">println</span>(<span style="color: crimson">"{}"</span>, std::<span style="color: darkturquoise">span</span>&lt;<span style="color: blue">int</span>&gt;{ <span style="color: cornflowerblue">vec</span>.<span style="color: brown">begin</span>(), <span style="color: cornflowerblue">vec</span>.<span style="color: brown">end</span>() - 2 });
+    std::<span style="color: brown">println</span>(
+        <span style="color: crimson">"std::vector&lt;int&gt;:<span style="color: mediumpurple">\n</span><span style="color: mediumpurple">\t</span>{}<span style="color: mediumpurple">\n</span>"</span>
+        <span style="color: crimson">"std::tuple&lt;int, std::string_view&gt;:<span style="color: mediumpurple">\n</span><span style="color: mediumpurple">\t</span>{}<span style="color: mediumpurple">\n</span>"</span>
+        <span style="color: crimson">"std::multiset&lt;double&gt;:<span style="color: mediumpurple">\n</span><span style="color: mediumpurple">\t</span>{}<span style="color: mediumpurple">\n</span>"</span>
+        <span style="color: crimson">"std::unordered_map&lt;std::string, int&gt;:<span style="color: mediumpurple">\n</span><span style="color: mediumpurple">\t</span>{}<span style="color: mediumpurple">\n</span>"</span>,
+        std::<span style="color: darkturquoise">vector</span>&lt;<span style="color: blue">int</span>&gt;{ 1, 2, 3, 4, 5 },
+        std::<span style="color: darkturquoise">tuple</span>&lt;<span style="color: blue">int</span>, std::<span style="color: darkturquoise">string_view</span>&gt;{ 42, <span style="color: crimson">"Hello"</span> },
+        std::<span style="color: darkturquoise">multiset</span>&lt;<span style="color: blue">double</span>&gt;{ 1.2, 3.4 },
+        std::<span style="color: darkturquoise">unordered_map</span>&lt;std::<span style="color: darkturquoise">string</span>, <span style="color: blue">int</span>&gt;{
+            { <span style="color: crimson">"abcd"</span>, 123 },
+            { <span style="color: crimson">"efgh"</span>, 456 },
+            { <span style="color: crimson">"ijkl"</span>, 789 }
+        }
+    );
 }
 
 </code></pre>
@@ -105,15 +86,19 @@
             <div class="result-block">
                 <span style="font-size: larger"><i>控制台：</i></span>
 <pre><code style="font-family: Monaco" class="console">
-[1, 2, 3, 4, 5]
-([Hello, World], ！！！, 3.14)
-{(8, (4, 5)), (9, (6, 7))}
-[1, 2, 3]
+std::vector&lt;int&gt;:
+        [1, 2, 3, 4, 5]
+std::tuple&lt;int, std::string_view&gt;:
+        (42, Hello)
+std::multiset&lt;double&gt;:
+        {1.2, 3.4}
+std::unordered_map&lt;std::string, int&gt;:
+        {(ijkl, 789), (efgh, 456), (abcd, 123)}
 
 </code></pre>
             </div>
         </div>
-        <h3>二、扩展管道运算<span style="color:darkmagenta; font-size: 0.85em">（C++20）</span><span style="color: red; font-size: 0.85em"><i><b>（unstable）</b></i></span></h3>
+        <h3>二、扩展管道运算<span style="color: red; font-size: 0.85em"><i><b>（unstable）</b></i></span></h3>
         <p>
             本库在 clib::chain_utility 名称空间内重载了 operator| 和 operator/ 两个运算符，用于实现容器范围内的不可变管道运算与可变管道运算，由于容器与视图本质不同，因此该重载运算符与 std::views 中重载的管道运算符 operator| 并不兼容，如果一定要混合使用，请先调用 std::views::all 等函数将容器转换为范围适配器对象
         </p>
@@ -121,23 +106,20 @@
             <div class="code-block">
                 <span style="font-size: larger"><i>示例代码：</i></span>
 <pre><code class="language-cpp">
-<span style="color: gray">#include</span> <span style="color: crimson">&lt;print&gt;</span>
-<span style="color: gray">#include</span> <span style="color: crimson">&lt;ranges&gt;</span>
-<span style="color: gray">#include</span> <span style="color: crimson">"clib.hpp"</span>
-<span style="color: gray">#include</span> <span style="color: crimson">&lt;map&gt;</span>
+<span style="color: blue">import</span> clib;
+<span style="color: blue">import</span> std;
 
 <span style="color: blue">int</span> <span style="color: brown">main</span>() {
     <span style="color: blue">using</span> <span style="color: blue">namespace</span> clib::chain_utility;
     std::<span style="color: darkturquoise">map</span>&lt;<span style="color: blue">int</span>, <span style="color: blue">int</span>&gt; <span style="color: cornflowerblue">map</span>{ { 1, 1 }, { 2, 2 }, { 3, 3 }, { 4, 4 } };
     std::<span style="color: brown">println</span>(<span style="color: crimson">"map：{}"</span>, <span style="color: cornflowerblue">map</span>);
-    <span style="color: darkturquoise">size_t</span> <span style="color: cornflowerblue">flag</span>{};
-    for (<span style="color: blue">auto</span>&& <span style="color: cornflowerblue">val</span> : <span style="color: cornflowerblue">map</span>
+    for (<span style="color: blue">auto</span>&& [<span style="color: cornflowerblue">loc</span>, <span style="color: cornflowerblue">val</span>] : <span style="color: cornflowerblue">map</span>
         / [](<span style="color: blue">auto</span>& <span style="color: gray">n</span>) { <span style="color: gray">n</span>.second *= 2; }
         | [](<span style="color: blue">auto</span>& <span style="color: gray">n</span>) { <span style="color: gray">n</span>.second += 1; }
-        | std::views::<span style="color: brown">reverse</span>
         | std::views::<span style="color: brown">all</span>
-        | std::views::<span style="color: brown">filter</span>([](<span style="color: blue">auto</span>&&) { <span style="color: blueviolet">return</span> <span style="color: blue">true</span>; })) {
-        std::<span style="color: brown">println</span>(<span style="color: crimson">"第{}个元素：{}"</span>, ++<span style="color: cornflowerblue">flag</span>, <span style="color: cornflowerblue">val</span>);
+        | std::views::<span style="color: brown">reverse</span>
+        | std::views::<span style="color: brown">enumerate</span>) {
+        std::<span style="color: brown">println</span>(<span style="color: crimson">"第{}个元素：{}"</span>, <span style="color: cornflowerblue">loc</span> + 1, <span style="color: cornflowerblue">val</span>);
     }
     std::<span style="color: brown">println</span>(<span style="color: crimson">"map：{}"</span>, <span style="color: cornflowerblue">map</span>);
     <span style="color: darkgreen">// 最终的值受到了可变管道运算调用 [](auto& n) { n.second *= 2; } 的影响
@@ -163,72 +145,58 @@ map：{(1, 2), (2, 4), (3, 6), (4, 8)}
         <h3>三、矩阵运算工具</h3>
         <p>
             简单的数值计算工具，定义在clib名称空间内，同时支持std::vector和std::deque两种容器存储的二维数组的值（包括二者嵌套版本），暂不支持std::array，暂不支持复数
-            <h4><i style="color: lightslategrey">矩阵概念定义：<span style="color:darkmagenta; font-size: 0.85em">（C++20）</span></i></h4>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue">template</span> &lt;<span style="color: blue">typename</span> <span style="color: darkturquoise">ContainerType</span>&gt;<br />
-            &nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue">concept</span> <span style="color: darkturquoise">MatrixType</span> = <span style="color: blue">requires</span> (<span style="color: darkturquoise">ContainerType</span> <span style="color: cornflowerblue">matrix</span>) {<br />
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue">requires</span> std::ranges::<span style="color: darkturquoise">sized_range</span>&lt;<span style="color: darkturquoise">ContainerType</span>&gt;;<br />
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ <span style="color: cornflowerblue">matrix</span>.<span style="color: brown">size</span>() } -&gt; std::<span style="color: darkturquoise">same_as</span>&lt;<span style="color: darkturquoise">size_t</span>&gt;;<br />
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue">requires</span> <span style="color: blue">requires</span> (<span style="color: darkturquoise">size_t</span> <span style="color: cornflowerblue">row</span>, <span style="color: darkturquoise">size_t</span> <span style="color: cornflowerblue">column</span>) {<br />
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue">requires</span> std::ranges::<span style="color: darkturquoise">sized_range</span>&lt;<span style="color: blue">decltype</span>(<span style="color: cornflowerblue">matrix</span>[<span style="color: cornflowerblue">row</span>])&gt;;<br />
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ <span style="color: cornflowerblue">matrix</span>[<span style="color: cornflowerblue">row</span>].<span style="color: brown">size</span>() } -&gt; std::<span style="color: darkturquoise">same_as</span>&lt;<span style="color: darkturquoise">size_t</span>&gt;;<br />
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: cornflowerblue">matrix</span>[<span style="color: cornflowerblue">row</span>].<span style="color: brown">size</span>() == <span style="color: cornflowerblue">matrix</span>.<span style="color: brown">front</span>().<span style="color: brown">size</span>();<br />
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;std::<span style="color: darkturquoise">is_arithmetic_v</span>&lt;<span style="color: blue">decltype</span>(<span style="color: cornflowerblue">matrix</span>[<span style="color: cornflowerblue">row</span>][<span style="color: cornflowerblue">column</span>])&gt;;<br />
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ <span style="color: cornflowerblue">matrix</span>[<span style="color: cornflowerblue">row</span>][<span style="color: cornflowerblue">column</span>] } -&gt; std::<span style="color: darkturquoise">convertible_to</span>&lt;<span style="color: blue">long double</span>&gt;;<br />
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;};<br />
-            &nbsp;&nbsp;&nbsp;&nbsp;};<br />
+                        <div class="code-block" style="margin-right: 55%">
+                <span style="font-size: larger"><i>矩阵概念定义：</i></span>
+<pre><code class="language-cpp">
+<span style="color: blue">template</span> &lt;<span style="color: blue">typename</span> <span style="color: darkturquoise">ContainerType</span>&gt;
+<span style="color: blue">concept</span> <span style="color: darkturquoise">MatrixType</span> = <span style="color: blue">requires</span> (<span style="color: darkturquoise">ContainerType</span> <span style="color: cornflowerblue">matrix</span>) {
+    <span style="color: blue">requires</span> std::ranges::<span style="color: darkturquoise">sized_range</span>&lt;<span style="color: darkturquoise">ContainerType</span>&gt;;
+    { <span style="color: cornflowerblue">matrix</span>.<span style="color: brown">size</span>() } -&gt; std::<span style="color: darkturquoise">same_as</span>&lt;<span style="color: darkturquoise">size_t</span>&gt;;
+    <span style="color: blue">requires</span> <span style="color: blue">requires</span> (<span style="color: darkturquoise">size_t</span> <span style="color: cornflowerblue">row</span>, <span style="color: darkturquoise">size_t</span> <span style="color: cornflowerblue">column</span>) {
+        <span style="color: blue">requires</span> std::ranges::<span style="color: darkturquoise">sized_range</span>&lt;<span style="color: blue">decltype</span>(<span style="color: cornflowerblue">matrix</span>[<span style="color: cornflowerblue">row</span>])&gt;;
+        { <span style="color: cornflowerblue">matrix</span>[<span style="color: cornflowerblue">row</span>].<span style="color: brown">size</span>() } -&gt; std::<span style="color: darkturquoise">same_as</span>&lt;<span style="color: darkturquoise">size_t</span>&gt;;
+        <span style="color: cornflowerblue">matrix</span>[<span style="color: cornflowerblue">row</span>].<span style="color: brown">size</span>() == <span style="color: cornflowerblue">matrix</span>.<span style="color: brown">front</span>().<span style="color: brown">size</span>();
+        std::<span style="color: darkturquoise">is_arithmetic_v</span>&lt;<span style="color: blue">decltype</span>(<span style="color: cornflowerblue">matrix</span>[<span style="color: cornflowerblue">row</span>][<span style="color: cornflowerblue">column</span>])&gt;;
+        { <span style="color: cornflowerblue">matrix</span>[<span style="color: cornflowerblue">row</span>][<span style="color: cornflowerblue">column</span>] } -&gt; std::<span style="color: darkturquoise">convertible_to</span>&lt;<span style="color: blue">long double</span>&gt;;
+    };
+};
+
+</code></pre>
+            </div>
             <h4><i style="color: lightslategrey">已支持的运算：</i></h4>
             <h4>矩阵加减法：&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: green">clib::matrix_utility::operator+</span>、<span style="color: green">clib::matrix_utility::operator-</span></h4>
             定义在clib::matrix_utility名称空间内的重载运算符，可用于计算简单的矩阵加减法，返回值类型与第一个参数的矩阵类型保持一致（请务必确保第一个参数的矩阵内元素类型不会影响到计算精度问题，建议将内层元素类型全部设置为浮点数，尽管你可能只使用整数）
             <h4 style="color: peru">函数原型：</h4>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue">template</span> &lt;<span style="color: blue">typename</span> <span style="color: darkturquoise">Matrix1</span>, <span style="color: blue">typename</span> <span style="color: darkturquoise">Matrix2</span>&gt; <span style="color: blue">constexpr</span> <span style="color: darkturquoise">Matrix1</span> <span style="color: brown">operator+</span>(<span style="color: blue">const</span> <span style="color: darkturquoise">Matrix1</span>&, <span style="color: blue">const</span> <span style="color: darkturquoise">Matrix2</span>&);<span style="color:darkmagenta; font-size: 0.85em">（C++17前）</span><span style="color: red; font-size: 0.85em"><i><b>（unsafe）</b></i></span><br />
-            &nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue">template</span> &lt;<span style="color: blue">typename</span> <span style="color: darkturquoise">Matrix1</span>, <span style="color: blue">typename</span> <span style="color: darkturquoise">Matrix2</span>&gt; <span style="color: blue">constexpr</span> <span style="color: darkturquoise">Matrix1</span> <span style="color: brown">operator-</span>(<span style="color: blue">const</span> <span style="color: darkturquoise">Matrix1</span>&, <span style="color: blue">const</span> <span style="color: darkturquoise">Matrix2</span>&);<span style="color:darkmagenta; font-size: 0.85em">（C++17前）</span><span style="color: red; font-size: 0.85em"><i><b>（unsafe）</b></i></span><br />
-            &nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue">template</span> &lt;<span style="color: blue">typename</span> <span style="color: darkturquoise">Matrix1</span>, <span style="color: blue">typename</span> <span style="color: darkturquoise">Matrix2</span>&gt; [[nodiscard]] <span style="color: blue">constexpr</span> <span style="color: darkturquoise">Matrix1</span> <span style="color: brown">operator+</span>(<span style="color: blue">const</span> <span style="color: darkturquoise">Matrix1</span>&, <span style="color: blue">const</span> <span style="color: darkturquoise">Matrix2</span>&);<span style="color:darkmagenta; font-size: 0.85em">（C++17起，C++20前）</span><span style="color: red; font-size: 0.85em"><i><b>（unsafe）</b></i></span><br />
-            &nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue">template</span> &lt;<span style="color: blue">typename</span> <span style="color: darkturquoise">Matrix1</span>, <span style="color: blue">typename</span> <span style="color: darkturquoise">Matrix2</span>&gt; [[nodiscard]] <span style="color: blue">constexpr</span> <span style="color: darkturquoise">Matrix1</span> <span style="color: brown">operator-</span>(<span style="color: blue">const</span> <span style="color: darkturquoise">Matrix1</span>&, <span style="color: blue">const</span> <span style="color: darkturquoise">Matrix2</span>&);<span style="color:darkmagenta; font-size: 0.85em">（C++17起，C++20前）</span><span style="color: red; font-size: 0.85em"><i><b>（unsafe）</b></i></span><br />
-            &nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue">template</span> &lt;<span style="color: darkturquoise">MatrixType</span> <span style="color: darkturquoise">Matrix1</span>, <span style="color: darkturquoise">MatrixType</span> <span style="color: darkturquoise">Matrix2</span>&gt; [[nodiscard]] <span style="color: blue">constexpr</span> <span style="color: darkturquoise">Matrix1</span> <span style="color: brown">operator+</span>(<span style="color: blue">const</span> <span style="color: darkturquoise">Matrix1</span>&, <span style="color: blue">const</span> <span style="color: darkturquoise">Matrix2</span>&);<span style="color:darkmagenta; font-size: 0.85em">（C++20起）</span><br />
-            &nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue">template</span> &lt;<span style="color: darkturquoise">MatrixType</span> <span style="color: darkturquoise">Matrix1</span>, <span style="color: darkturquoise">MatrixType</span> <span style="color: darkturquoise">Matrix2</span>&gt; [[nodiscard]] <span style="color: blue">constexpr</span> <span style="color: darkturquoise">Matrix1</span> <span style="color: brown">operator-</span>(<span style="color: blue">const</span> <span style="color: darkturquoise">Matrix1</span>&, <span style="color: blue">const</span> <span style="color: darkturquoise">Matrix2</span>&);<span style="color:darkmagenta; font-size: 0.85em">（C++20起）</span><br />
-            <h4>矩阵乘法：&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: green">clib::multi_mm<span style="color:darkmagenta; font-size: 0.85em">（C++20前）</span></span>、<span style="color: green">clib::multi_mn<span style="color:darkmagenta; font-size: 0.85em">（C++20前）</span></span>、<span style="color: green">clib::multi_nm<span style="color:darkmagenta; font-size: 0.85em">（C++20前）</span></span>、<span style="color: green">clib::matrix_utility::operator*<span style="color:darkmagenta; font-size: 0.85em">（C++20起）</span></span></h4>
-            <span style="color:darkmagenta">（C++20前）</span>：multi_mm函数用于计算矩阵与矩阵的乘积，multi_mn函数用于计算矩阵与常数的乘积，multi_nm函数用于计算常数与矩阵的乘积，以上三个函数定义于clib名称空间内，multi_mm函数的返回值类型与第一个参数的矩阵类型保持一致（请务必确保第一个参数的矩阵内元素类型不会影响到计算精度问题，建议将内层元素类型全部设置为浮点数，尽管你可能只使用整数）<span style="color: red"><b>（C++20后弃用）</b></span><br /><br />
-            <span style="color:darkmagenta">（C++20后）</span>：定义在clib::matrix_utility名称空间内的重载运算符，可用于计算简单的矩阵乘法，当运算符两侧的值均为矩阵类型时，返回值类型与左侧矩阵类型保持一致（请务必确保左侧矩阵内的元素类型不会影响到计算精度问题，建议将内层元素类型全部设置为浮点数，尽管你可能只使用整数）
+            &nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue">template</span> &lt;<span style="color: darkturquoise">MatrixType</span> <span style="color: darkturquoise">Matrix1</span>, <span style="color: darkturquoise">MatrixType</span> <span style="color: darkturquoise">Matrix2</span>&gt; [[nodiscard]] <span style="color: blue">constexpr</span> <span style="color: darkturquoise">Matrix1</span> <span style="color: brown">operator+</span>(<span style="color: blue">const</span> <span style="color: darkturquoise">Matrix1</span>&, <span style="color: blue">const</span> <span style="color: darkturquoise">Matrix2</span>&);<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue">template</span> &lt;<span style="color: darkturquoise">MatrixType</span> <span style="color: darkturquoise">Matrix1</span>, <span style="color: darkturquoise">MatrixType</span> <span style="color: darkturquoise">Matrix2</span>&gt; [[nodiscard]] <span style="color: blue">constexpr</span> <span style="color: darkturquoise">Matrix1</span> <span style="color: brown">operator-</span>(<span style="color: blue">const</span> <span style="color: darkturquoise">Matrix1</span>&, <span style="color: blue">const</span> <span style="color: darkturquoise">Matrix2</span>&);<br />
+            <h4>矩阵乘法：&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: green">clib::matrix_utility::operator*</span></h4>
+            定义在clib::matrix_utility名称空间内的重载运算符，可用于计算简单的矩阵乘法，当运算符两侧的值均为矩阵类型时，返回值类型与左侧矩阵类型保持一致（请务必确保左侧矩阵内的元素类型不会影响到计算精度问题，建议将内层元素类型全部设置为浮点数，尽管你可能只使用整数）
             <h4 style="color: peru">函数原型：</h4>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue">template</span> &lt;<span style="color: blue">typename</span> <span style="color: darkturquoise">Matrix1</span>, <span style="color: blue">typename</span> <span style="color: darkturquoise">Matrix2</span>&gt; <span style="color: blue">constexpr</span> <span style="color: darkturquoise">Matrix1</span> <span style="color: brown">multi_mm</span>(<span style="color: blue">const</span> <span style="color: darkturquoise">Matrix1</span>&, <span style="color: blue">const</span> <span style="color: darkturquoise">Matrix2</span>&);<span style="color:darkmagenta; font-size: 0.85em">（C++17前）</span><span style="color: red; font-size: 0.85em"><i><b>（unsafe）</b></i></span><br />
-            &nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue">template</span> &lt;<span style="color: blue">typename</span> <span style="color: darkturquoise">Matrix</span>&gt; <span style="color: blue">constexpr</span> <span style="color: darkturquoise">Matrix</span> <span style="color: brown">multi_mn</span>(<span style="color: blue">const</span> <span style="color: darkturquoise">Matrix</span>&, <span style="color: blue">long double</span>);<span style="color:darkmagenta; font-size: 0.85em">（C++17前）</span><span style="color: red; font-size: 0.85em"><i><b>（unsafe）</b></i></span><br />
-            &nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue">template</span> &lt;<span style="color: blue">typename</span> <span style="color: darkturquoise">Matrix</span>&gt; <span style="color: blue">constexpr</span> <span style="color: darkturquoise">Matrix</span> <span style="color: brown">multi_nm</span>(<span style="color: blue">long double</span>, <span style="color: blue">const</span> <span style="color: darkturquoise">Matrix</span>&);<span style="color:darkmagenta; font-size: 0.85em">（C++17前）</span><span style="color: red; font-size: 0.85em"><i><b>（unsafe）</b></i></span><br />
-            &nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue">template</span> &lt;<span style="color: blue">typename</span> <span style="color: darkturquoise">Matrix1</span>, <span style="color: blue">typename</span> <span style="color: darkturquoise">Matrix2</span>&gt; [[nodiscard]] <span style="color: blue">constexpr</span> <span style="color: darkturquoise">Matrix1</span> <span style="color: brown">multi_mm</span>(<span style="color: blue">const</span> <span style="color: darkturquoise">Matrix1</span>&, <span style="color: blue">const</span> <span style="color: darkturquoise">Matrix2</span>&);<span style="color:darkmagenta; font-size: 0.85em">（C++17起，C++20弃用）</span><span style="color: red; font-size: 0.85em"><i><b>（unsafe）</b></i></span><br />
-            &nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue">template</span> &lt;<span style="color: blue">typename</span> <span style="color: darkturquoise">Matrix</span>&gt; [[nodiscard]] <span style="color: blue">constexpr</span> <span style="color: darkturquoise">Matrix</span> <span style="color: brown">multi_mn</span>(<span style="color: blue">const</span> <span style="color: darkturquoise">Matrix</span>&, <span style="color: blue">long double</span>);<span style="color:darkmagenta; font-size: 0.85em">（C++17起，C++20弃用）</span><span style="color: red; font-size: 0.85em"><i><b>（unsafe）</b></i></span><br />
-            &nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue">template</span> &lt;<span style="color: blue">typename</span> <span style="color: darkturquoise">Matrix</span>&gt; [[nodiscard]] <span style="color: blue">constexpr</span> <span style="color: darkturquoise">Matrix</span> <span style="color: brown">multi_nm</span>(<span style="color: blue">long double</span>, <span style="color: blue">const</span> <span style="color: darkturquoise">Matrix</span>&);<span style="color:darkmagenta; font-size: 0.85em">（C++17起，C++20弃用）</span><span style="color: red; font-size: 0.85em"><i><b>（unsafe）</b></i></span><br />
-            &nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue">template</span> &lt;<span style="color: darkturquoise">MatrixType</span> <span style="color: darkturquoise">Matrix1</span>, <span style="color: darkturquoise">MatrixType</span> <span style="color: darkturquoise">Matrix2</span>&gt; [[nodiscard]] <span style="color: blue">constexpr</span> <span style="color: darkturquoise">Matrix1</span> <span style="color: brown">operator*</span>(<span style="color: blue">const</span> <span style="color: darkturquoise">Matrix1</span>&, <span style="color: blue">const</span> <span style="color: darkturquoise">Matrix2</span>&);<span style="color:darkmagenta; font-size: 0.85em">（C++20起）</span><br />
-            &nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue">template</span> &lt;<span style="color: darkturquoise">MatrixType</span> <span style="color: darkturquoise">Matrix</span>&gt; [[nodiscard]] <span style="color: blue">constexpr</span> <span style="color: darkturquoise">Matrix</span> <span style="color: brown">operator*</span>(<span style="color: blue">const</span> <span style="color: darkturquoise">Matrix</span>&, <span style="color: blue">long double</span>);<span style="color:darkmagenta; font-size: 0.85em">（C++20起）</span><br />
-            &nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue">template</span> &lt;<span style="color: darkturquoise">MatrixType</span> <span style="color: darkturquoise">Matrix</span>&gt; [[nodiscard]] <span style="color: blue">constexpr</span> <span style="color: darkturquoise">Matrix</span> <span style="color: brown">operator*</span>(<span style="color: blue">long double</span>, <span style="color: blue">const</span> <span style="color: darkturquoise">Matrix</span>&);<span style="color:darkmagenta; font-size: 0.85em">（C++20起）</span><br />
+            &nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue">template</span> &lt;<span style="color: darkturquoise">MatrixType</span> <span style="color: darkturquoise">Matrix1</span>, <span style="color: darkturquoise">MatrixType</span> <span style="color: darkturquoise">Matrix2</span>&gt; [[nodiscard]] <span style="color: blue">constexpr</span> <span style="color: darkturquoise">Matrix1</span> <span style="color: brown">operator*</span>(<span style="color: blue">const</span> <span style="color: darkturquoise">Matrix1</span>&, <span style="color: blue">const</span> <span style="color: darkturquoise">Matrix2</span>&);<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue">template</span> &lt;<span style="color: darkturquoise">MatrixType</span> <span style="color: darkturquoise">Matrix</span>&gt; [[nodiscard]] <span style="color: blue">constexpr</span> <span style="color: darkturquoise">Matrix</span> <span style="color: brown">operator*</span>(<span style="color: blue">const</span> <span style="color: darkturquoise">Matrix</span>&, <span style="color: blue">long double</span>);<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue">template</span> &lt;<span style="color: darkturquoise">MatrixType</span> <span style="color: darkturquoise">Matrix</span>&gt; [[nodiscard]] <span style="color: blue">constexpr</span> <span style="color: darkturquoise">Matrix</span> <span style="color: brown">operator*</span>(<span style="color: blue">long double</span>, <span style="color: blue">const</span> <span style="color: darkturquoise">Matrix</span>&);<br />
             <h4>矩阵转置：&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: green">clib::transpose</span></h4>
             定义在clib名称空间内的函数，可用于求得转置矩阵，返回值类型与传入参数的矩阵类型保持一致
             <h4 style="color: peru">函数原型：</h4>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue">template</span> &lt;<span style="color: blue">typename</span> <span style="color: darkturquoise">Matrix</span>&gt; <span style="color: blue">constexpr</span> <span style="color: darkturquoise">Matrix</span> <span style="color: brown">transpose</span>(<span style="color: blue">const</span> <span style="color: darkturquoise">Matrix</span>&);<span style="color:darkmagenta; font-size: 0.85em">（C++17前）</span><span style="color: red; font-size: 0.85em"><i><b>（unsafe）</b></i></span><br />
-            &nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue">template</span> &lt;<span style="color: blue">typename</span> <span style="color: darkturquoise">Matrix</span>&gt; [[nodiscard]] <span style="color: blue">constexpr</span> <span style="color: darkturquoise">Matrix</span> <span style="color: brown">transpose</span>(<span style="color: blue">const</span> <span style="color: darkturquoise">Matrix</span>&);<span style="color:darkmagenta; font-size: 0.85em">（C++17起，C++20前）</span><span style="color: red; font-size: 0.85em"><i><b>（unsafe）</b></i></span><br />
-            &nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue">template</span> &lt;<span style="color: darkturquoise">MatrixType</span> <span style="color: darkturquoise">Matrix</span>&gt; [[nodiscard]] <span style="color: blue">constexpr</span> <span style="color: darkturquoise">Matrix</span> <span style="color: brown">transpose</span>(<span style="color: blue">const</span> <span style="color: darkturquoise">Matrix</span>&);<span style="color:darkmagenta; font-size: 0.85em">（C++20起）</span><br />
+            &nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue">template</span> &lt;<span style="color: darkturquoise">MatrixType</span> <span style="color: darkturquoise">Matrix</span>&gt; [[nodiscard]] <span style="color: blue">constexpr</span> <span style="color: darkturquoise">Matrix</span> <span style="color: brown">transpose</span>(<span style="color: blue">const</span> <span style="color: darkturquoise">Matrix</span>&);<br />
             <h4>矩阵求逆：<span style="color: gray">（暂不支持）</span></h4>
             <h4>矩阵求秩：<span style="color: gray">（暂不支持）</span></h4>
             <h4>行列式求值：&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: green">clib::determinant</span></h4>
             定义在clib名称空间内的函数，可用于求得行列式的值，返回值类型为long double
             <h4 style="color: peru">函数原型：</h4>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue">template</span> &lt;<span style="color: blue">typename</span> <span style="color: darkturquoise">Matrix</span>&gt; <span style="color: blue">constexpr</span> <span style="color: blue">long double</span> <span style="color: brown">determinant</span>(<span style="color: blue">const</span> <span style="color: darkturquoise">Matrix</span>&);<span style="color:darkmagenta; font-size: 0.85em">（C++17前）</span><span style="color: red; font-size: 0.85em"><i><b>（unsafe）</b></i></span><br />
-            &nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue">template</span> &lt;<span style="color: blue">typename</span> <span style="color: darkturquoise">Matrix</span>&gt; [[nodiscard]] <span style="color: blue">constexpr</span> <span style="color: blue">long double</span> <span style="color: brown">determinant</span>(<span style="color: blue">const</span> <span style="color: darkturquoise">Matrix</span>&);<span style="color:darkmagenta; font-size: 0.85em">（C++17起，C++20前）</span><span style="color: red; font-size: 0.85em"><i><b>（unsafe）</b></i></span><br />
-            &nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue">template</span> &lt;<span style="color: darkturquoise">MatrixType</span> <span style="color: darkturquoise">Matrix</span>&gt; [[nodiscard]] <span style="color: blue">constexpr</span> <span style="color: blue">long double</span> <span style="color: brown">determinant</span>(<span style="color: blue">const</span> <span style="color: darkturquoise">Matrix</span>&);<span style="color:darkmagenta; font-size: 0.85em">（C++20起）</span>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue">template</span> &lt;<span style="color: darkturquoise">MatrixType</span> <span style="color: darkturquoise">Matrix</span>&gt; [[nodiscard]] <span style="color: blue">constexpr</span> <span style="color: blue">long double</span> <span style="color: brown">determinant</span>(<span style="color: blue">const</span> <span style="color: darkturquoise">Matrix</span>&);
             <h4><i style="color: lightslategrey">其他函数工具：</i></h4>
             <h4>格式化矩阵或行列式：&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: green">clib::matrix_view</span></h4>
-            定义在clib名称空间内的函数，可用于将矩阵或行列式格式化为字符串对象，C++20标准后的第二个参数用于指定格式化精度位数（默认6位小数）
+            定义在clib名称空间内的函数，可用于将矩阵或行列式格式化为字符串对象，第二个参数用于指定格式化精度位数（默认6位小数）
             <h4 style="color: peru">函数原型：</h4>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue">template</span> &lt;<span style="color: blue">typename</span> <span style="color: darkturquoise">Matrix</span>&gt; std::<span style="color: darkturquoise">string</span> <span style="color: brown">matrix_view</span>(<span style="color: blue">const</span> <span style="color: darkturquoise">Matrix</span>&);<span style="color:darkmagenta; font-size: 0.85em">（C++17前）</span><span style="color: red; font-size: 0.85em"><i><b>（unsafe）</b></i></span><br />
-            &nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue">template</span> &lt;<span style="color: blue">typename</span> <span style="color: darkturquoise">Matrix</span>&gt; [[nodiscard]] std::<span style="color: darkturquoise">string</span> <span style="color: brown">matrix_view</span>(<span style="color: blue">const</span> <span style="color: darkturquoise">Matrix</span>&);<span style="color:darkmagenta; font-size: 0.85em">（C++17起，C++20前）</span><span style="color: red; font-size: 0.85em"><i><b>（unsafe）</b></i></span><br />
-            &nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue">template</span> &lt;<span style="color: darkturquoise">MatrixType</span> <span style="color: darkturquoise">Matrix</span>&gt; [[nodiscard]] std::<span style="color: darkturquoise">string</span> <span style="color: brown">matrix_view</span>(<span style="color: blue">const</span> <span style="color: darkturquoise">Matrix</span>&, <span style="color: darkturquoise">size_t</span> <span style="color: cornflowerblue">precision</span> = 6);<span style="color:darkmagenta; font-size: 0.85em">（C++20起）</span>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span style="color: blue">template</span> &lt;<span style="color: darkturquoise">MatrixType</span> <span style="color: darkturquoise">Matrix</span>&gt; [[nodiscard]] std::<span style="color: darkturquoise">string</span> <span style="color: brown">matrix_view</span>(<span style="color: blue">const</span> <span style="color: darkturquoise">Matrix</span>&, <span style="color: darkturquoise">size_t</span> <span style="color: cornflowerblue">precision</span> = 6);
         </p>
         <div class="container">
             <div class="code-block">
                 <span style="font-size: larger"><i>示例代码：</i></span>
 <pre><code class="language-cpp">
-<span style="color: gray">#include</span> <span style="color: crimson">&lt;print&gt;</span>
-<span style="color: gray">#include</span> <span style="color: crimson">"clib.hpp"</span>
-<span style="color: gray">#include</span> <span style="color: crimson">&lt;vector&gt;</span>
-<span style="color: gray">#include</span> <span style="color: crimson">&lt;deque&gt;</span>
+<span style="color: blue">import</span> clib;
+<span style="color: blue">import</span> std;
 
 <span style="color: blue">int</span> <span style="color: brown">main</span>() {
     std::<span style="color: darkturquoise">vector</span>&lt;std::<span style="color: darkturquoise">deque</span>&lt;<span style="color: blue">double</span>&gt;&gt; <span style="color: cornflowerblue">vd</span>{
